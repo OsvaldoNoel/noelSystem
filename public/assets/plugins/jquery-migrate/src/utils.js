@@ -1,0 +1,1 @@
+export function camelCase(e){return e.replace(/-([a-z])/g,(function(e,r){return r.toUpperCase()}))}

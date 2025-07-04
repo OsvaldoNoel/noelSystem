@@ -1,0 +1,1 @@
+import{defineConfig}from"cypress";import plugins from"./cypress/plugins/index.js";export default defineConfig({video:!1,screenshot:!1,e2e:{setupNodeEvents:(e,s)=>plugins(e,s)}});

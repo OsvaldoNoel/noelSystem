@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.fi={cancelText:"Kumoa",chooseText:"Valitse"};

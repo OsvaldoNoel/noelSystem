@@ -1,0 +1,2 @@
+/*! For license information please see bg.global.js.LICENSE.txt */
+!function(e){"use strict";var t={code:"bg",week:{dow:1,doy:4},buttonText:{prev:"назад",next:"напред",today:"днес",year:"година",month:"Месец",week:"Седмица",day:"Ден",list:"График"},allDayText:"Цял ден",moreLinkText:e=>"+още "+e,noEventsText:"Няма събития за показване"};FullCalendar.globalLocales.push(t)}();

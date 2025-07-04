@@ -1,0 +1,1 @@
+window.console||(window.console={});var logOutput="";window.console.log=function(){logOutput+=Array.prototype.join.call(arguments," ")+"\n"},window.startIframeTest=function(){var o=Array.prototype.slice.call(arguments);o.unshift(window.jQuery,window,document,logOutput),window.parent.TestManager.iframeCallback.apply(null,o)};

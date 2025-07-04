@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.ca={cancelText:"Cancel·lar",chooseText:"Escollir",clearText:"Esborrar color seleccionat",noColorSelectedText:"Cap color seleccionat",togglePaletteMoreText:"Més",togglePaletteLessText:"Menys"};

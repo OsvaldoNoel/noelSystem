@@ -1,0 +1,1 @@
+window.compareVersions=function(r,e){var n,i=/^(\d+)\.(\d+)\.(\d+)/,o=i.exec(r)||[],u=i.exec(e)||[];for(n=1;n<=3;n++){if(+o[n]>+u[n])return 1;if(+o[n]<+u[n])return-1}return 0},window.jQueryVersionSince=function(r){return compareVersions(jQuery.fn.jquery,r)>=0};

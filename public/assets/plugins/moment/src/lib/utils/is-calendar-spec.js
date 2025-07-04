@@ -1,0 +1,1 @@
+import isObjectEmpty from"./is-object-empty";import hasOwnProp from"./has-own-prop";import isObject from"./is-object";export default function isCalendarSpec(e){var t,o=isObject(e)&&!isObjectEmpty(e),r=!1,s=["sameDay","nextDay","lastDay","nextWeek","lastWeek","sameElse"];for(t=0;t<s.length;t+=1)r=r||hasOwnProp(e,s[t]);return o&&r}

@@ -1,0 +1,1 @@
+export default function isFunction(n){return"undefined"!=typeof Function&&n instanceof Function||"[object Function]"===Object.prototype.toString.call(n)}

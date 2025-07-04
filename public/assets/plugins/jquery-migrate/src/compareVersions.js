@@ -1,0 +1,1 @@
+function compareVersions(r,e){var n,o=/^(\d+)\.(\d+)\.(\d+)/,u=o.exec(r)||[],i=o.exec(e)||[];for(n=1;n<=3;n++){if(+u[n]>+i[n])return 1;if(+u[n]<+i[n])return-1}return 0}export function jQueryVersionSince(r){return compareVersions(jQuery.fn.jquery,r)>=0}

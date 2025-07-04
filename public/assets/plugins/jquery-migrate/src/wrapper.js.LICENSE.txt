@@ -1,0 +1,4 @@
+/*!
+ * jQuery Migrate - v@VERSION - @DATE
+ * Copyright OpenJS Foundation and other contributors
+ */

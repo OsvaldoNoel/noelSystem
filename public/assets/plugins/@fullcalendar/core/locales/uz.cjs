@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var l75={code:"uz",week:{dow:1,doy:4},buttonText:{prev:"Oldingi",next:"Keyingi",today:"Bugun",year:"Yil",month:"Oy",week:"Xafta",day:"Kun",list:"Kun tartibi"},allDayText:"Kun bo'yi",moreLinkText:e=>"+ yana "+e,noEventsText:"Ko'rsatish uchun voqealar yo'q"};exports.default=l75;

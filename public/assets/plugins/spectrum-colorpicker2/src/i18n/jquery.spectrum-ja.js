@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.ja={cancelText:"中止",chooseText:"選択"};

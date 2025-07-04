@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.dk={cancelText:"annuller",chooseText:"Vælg"};

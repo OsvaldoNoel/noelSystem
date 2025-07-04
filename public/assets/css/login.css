@@ -1,0 +1,40 @@
+:root { 
+    --bs-body-bg-cover: url(../../assets/img/planet.jpg); 
+}
+
+/* Estilos para estados del input */
+#ci_input.loading {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    padding-right: 35px;
+}
+
+#ci_input.invalid {
+    border-color: #dc3545;
+}
+
+#ci_input.valid {
+    border-color: #28a745;
+}
+
+#ci_input.loading {
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 20px;
+    animation: spin 1s linear infinite;
+}
+
+
+/* Estilo para las opciones */
+.form-select option {
+    background-color: hsl(175, 98%, 35%); /* Fondo oscuro */
+    color: #e2e8f0; /* Texto claro */
+}
+
+ 
+
+ 
+ 

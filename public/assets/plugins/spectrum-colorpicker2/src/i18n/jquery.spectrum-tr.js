@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.tr={cancelText:"iptal",chooseText:"tamam"};

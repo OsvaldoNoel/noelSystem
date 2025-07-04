@@ -1,0 +1,1 @@
+define(["../core","../var/documentElement","../selector/contains"],(function(n,e){"use strict";var o=function(e){return n.contains(e.ownerDocument,e)},t={composed:!0};return e.getRootNode&&(o=function(e){return n.contains(e.ownerDocument,e)||e.getRootNode(t)===e.ownerDocument}),o}));

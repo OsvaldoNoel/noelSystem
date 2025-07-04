@@ -1,0 +1,2 @@
+/*! For license information please see wrapper.js.LICENSE.txt */
+!function(e){"use strict";"function"==typeof define&&define.amd?define(["jquery"],(function(n){return e(n,window)})):"object"==typeof module&&module.exports?module.exports=e(require("jquery"),window):e(jQuery,window)}((function(e,n){"use strict";return e}));

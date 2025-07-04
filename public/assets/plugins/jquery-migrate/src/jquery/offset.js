@@ -1,0 +1,1 @@
+import{migrateWarn,migratePatchFunc}from"../main.js";var origOffset=jQuery.fn.offset;migratePatchFunc(jQuery.fn,"offset",(function(){var e=this[0];return!e||e.nodeType&&e.getBoundingClientRect?origOffset.apply(this,arguments):(migrateWarn("offset-valid-elem","jQuery.fn.offset() requires a valid DOM element"),arguments.length?this:void 0)}),"offset-valid-elem");

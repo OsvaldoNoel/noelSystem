@@ -1,0 +1,204 @@
+div.dt-container div.dt-search {
+    text-align: left;
+}
+
+.btnPluss {
+    color: #02fdf5;
+    --bs-btn-hover-bg: hsla(0, 0%, 0%, 0%);
+    --bs-btn-active-color: #2bff00;
+    --bs-btn-active-bg: hsla(0, 0%, 0%, 0%);
+}
+
+.card-header {
+    background-color: rgb(0 90 129 / 50%);
+}
+
+.modal .modal-content {
+    background: #001b1b;
+}
+
+.card .card-header {
+    font-size: small;
+}
+
+table.dataTable tbody td {
+    vertical-align: middle;
+}
+
+/* .table-hover>tbody>tr:hover>* {
+    --bs-table-color-state: #00ff9c; 
+} */
+
+table.table.dataTable.table-hover>tbody>tr:hover>* {
+    box-shadow: inset 0 0 0 9999px rgb(0 0 0 / 50%);
+}
+
+.table-fixed {
+    table-layout: fixed;
+    /* Obliga a respetar max-width */
+    width: 100%;
+    /* Necesario para que funcione */
+}
+
+.dropdown-menu {
+    --bs-dropdown-bg: hsl(229.74deg 98.83% 14.57% / 90%);
+    --bs-dropdown-link-active-bg: rgb(0 90 129 / 90%);
+    --bs-dropdown-link-hover-bg: rgb(0 90 129 / 90%);
+}
+
+/* domingos en datapickr */
+.datepicker table tr td.highlighted {
+    background: #0044cc6e;
+}
+
+.datepicker .datepicker-days table tbody tr td.old {
+    color: rgba(var(--bs-body-color-rgb), .2);
+}
+
+.datepicker .datepicker-days table tbody tr td.new {
+    color: rgba(var(--bs-body-color-rgb), .2);
+}  
+
+.ts-dropdown,
+.ts-dropdown.form-control,
+.ts-dropdown.form-select {
+    background: rgb(0, 27, 38);
+    color: #cfc0cb;
+
+}
+
+.ts-dropdown .active {
+    background-color: #00fdea;
+    color: #000 !important;
+}
+
+.ts-dropdown-content {
+    scroll-behavior: auto;
+}
+
+.ts-control input {
+    color: #00d0fd;
+}
+
+.ts-dropdown [data-selectable] .highlight {
+    background: #00d0fd24;
+}
+
+.modal .modal-content>div {
+    background: #00217761;
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.row-min {
+    --bs-gutter-x: 10px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.plugin-dropdown_input .dropdown-input {
+    color: #fff;
+}
+
+
+.form-select:not([multiple]) option {
+    background: rgb(0, 27, 38);
+    color: #cfc0cf;
+}
+
+.opt:hover {
+    background: lime !important;
+    color: #2f354c !important;
+}
+
+.swal2-html-container {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 20px !important;
+    color: black !important;
+}
+
+/* Clases de toast mask */
+.soft-pink-toast {
+    position: fixed;
+    bottom: 20px;
+    left: auto;
+    /* Anula cualquier left definido antes */
+    right: 20px;
+    /* Posición a la derecha */
+    transform: none;
+    /* Elimina el transform que centraba el elemento */
+    z-index: 1100;
+    min-width: 300px;
+    max-width: 350px;
+    border-radius: 15px !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ff7adc;
+    background-color: #ff7adc !important;
+}
+
+/* Estilos del texto (mantenemos los anteriores) */
+.toast-title-alert {
+    font-weight: bold;
+    color: #000000;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.toast-message-alert {
+    color: #000000;
+    font-size: 0.95rem;
+}
+
+.toast-format-example {
+    font-weight: bold;
+    color: #0015ff;
+    letter-spacing: 1px;
+}
+
+.toast-divider {
+    margin: 0.5rem auto;
+    width: 80%;
+    opacity: 0.2;
+    border-color: #000;
+}
+
+/* Estilos personalizados para el scroll - Manteniendo tu base */
+.dt-scroll-body::-webkit-scrollbar {
+    width: 1px;
+    height: 1px;
+}
+
+.dt-scroll-body::-webkit-scrollbar-track {
+    background: transparent;
+} 
+ 
+.dt-scroll-body {
+    scrollbar-width: thin;
+    scrollbar-color: #08d5ec2f transparent;
+} 
+
+/* Estilo para nombres principales del datatable Tenants*/
+td .strong { 
+    font-weight: 600; 
+    color: #00eeff;
+}
+
+/* Estilo para sucursales */
+td .ms-5 {
+    margin-left: 1.5rem;
+    color: #d7d5d5;
+    position: relative;
+}
+
+td .ms-5::before {
+    position: absolute;
+    left: -1rem;
+}
+
+ 

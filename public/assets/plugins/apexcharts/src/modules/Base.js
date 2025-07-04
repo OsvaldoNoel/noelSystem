@@ -1,0 +1,1 @@
+import Config from"./settings/Config";import Globals from"./settings/Globals";export default class Base{constructor(o){this.opts=o}init(){const o=new Config(this.opts).init({responsiveOverride:!1});return{config:o,globals:(new Globals).init(o)}}}

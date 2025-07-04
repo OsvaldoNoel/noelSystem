@@ -1,0 +1,9 @@
+/*!
+ * jQuery Typeahead
+ * Copyright (C) 2020 RunningCoder.org
+ * Licensed under the MIT license
+ *
+ * @author Tom Bertrand
+ * @version 2.11.1 (2020-5-18)
+ * @link http://www.runningcoder.org/jquerytypeahead/
+ */

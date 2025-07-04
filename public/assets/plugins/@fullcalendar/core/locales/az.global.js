@@ -1,0 +1,2 @@
+/*! For license information please see az.global.js.LICENSE.txt */
+!function(e){"use strict";var t={code:"az",week:{dow:1,doy:4},buttonText:{prev:"Əvvəl",next:"Sonra",today:"Bu Gün",year:"Il",month:"Ay",week:"Həftə",day:"Gün",list:"Gündəm"},weekText:"Həftə",allDayText:"Bütün Gün",moreLinkText:e=>"+ daha çox "+e,noEventsText:"Göstərmək üçün hadisə yoxdur"};FullCalendar.globalLocales.push(t)}();

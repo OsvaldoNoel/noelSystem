@@ -1,0 +1,1 @@
+var disabledPatches=Object.create(null);jQuery.migrateDisablePatches=function(){var e;for(e=0;e<arguments.length;e++)disabledPatches[arguments[e]]=!0},jQuery.migrateEnablePatches=function(){var e;for(e=0;e<arguments.length;e++)delete disabledPatches[arguments[e]]},jQuery.migrateIsPatchEnabled=function(e){return!disabledPatches[e]};

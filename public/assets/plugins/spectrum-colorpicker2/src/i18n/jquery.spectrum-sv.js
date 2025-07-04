@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.sv={cancelText:"Avbryt",chooseText:"Välj"};

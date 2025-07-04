@@ -1,0 +1,1 @@
+const config=require("./webpack.development");delete config.entry,config.stats="errors-only",module.exports=config;

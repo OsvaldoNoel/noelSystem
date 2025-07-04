@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.cs={cancelText:"zrušit",chooseText:"vybrat",clearText:"Resetovat výběr barev",noColorSelectedText:"Žádná barva nebyla vybrána",togglePaletteMoreText:"více",togglePaletteLessText:"méně"};

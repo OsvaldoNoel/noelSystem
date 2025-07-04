@@ -1,0 +1,1 @@
+export default function map(r,t){var e,n=[],u=r.length;for(e=0;e<u;++e)n.push(t(r[e],e));return n}

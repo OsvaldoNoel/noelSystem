@@ -1,0 +1,1 @@
+import{normalizeObjectUnits}from"../units/aliases";import{configFromArray}from"./from-array";import map from"../utils/map";export function configFromObject(r){if(!r._d){var o=normalizeObjectUnits(r._i),i=void 0===o.day?o.date:o.day;r._a=map([o.year,o.month,i,o.hour,o.minute,o.second,o.millisecond],(function(r){return r&&parseInt(r,10)})),configFromArray(r)}}

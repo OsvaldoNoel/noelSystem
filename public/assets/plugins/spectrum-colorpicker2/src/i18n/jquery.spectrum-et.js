@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.et={cancelText:"Katkesta",chooseText:"Vali",clearText:"Tühista värvivalik",noColorSelectedText:"Ühtki värvi pole valitud",togglePaletteMoreText:"Rohkem",togglePaletteLessText:"Vähem"};

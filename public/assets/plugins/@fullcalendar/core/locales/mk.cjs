@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var l50={code:"mk",buttonText:{prev:"претходно",next:"следно",today:"Денес",year:"година",month:"Месец",week:"Недела",day:"Ден",list:"График"},weekText:"Сед",allDayText:"Цел ден",moreLinkText:e=>"+повеќе "+e,noEventsText:"Нема настани за прикажување"};exports.default=l50;

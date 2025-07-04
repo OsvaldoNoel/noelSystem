@@ -1,0 +1,1 @@
+jQuery.spectrum.localization["pt-pt"]={cancelText:"Cancelar",chooseText:"Escolher",clearText:"Limpar cor seleccionada",noColorSelectedText:"Nenhuma cor seleccionada",togglePaletteMoreText:"Mais",togglePaletteLessText:"Menos"};

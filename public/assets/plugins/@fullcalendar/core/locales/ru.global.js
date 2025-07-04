@@ -1,0 +1,2 @@
+/*! For license information please see ru.global.js.LICENSE.txt */
+!function(e){"use strict";var t={code:"ru",week:{dow:1,doy:4},buttonText:{prev:"Пред",next:"След",today:"Сегодня",year:"Год",month:"Месяц",week:"Неделя",day:"День",list:"Повестка дня"},weekText:"Нед",allDayText:"Весь день",moreLinkText:e=>"+ ещё "+e,noEventsText:"Нет событий для отображения"};FullCalendar.globalLocales.push(t)}();

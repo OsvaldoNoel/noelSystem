@@ -1,0 +1,1 @@
+var defaultOrdinal="%d",defaultDayOfMonthOrdinalParse=/\d{1,2}/;export{defaultOrdinal,defaultDayOfMonthOrdinalParse};export function ordinal(a){return this._ordinal.replace("%d",a)}

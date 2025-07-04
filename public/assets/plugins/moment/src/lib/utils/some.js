@@ -1,0 +1,1 @@
+var some;some=Array.prototype.some?Array.prototype.some:function(r){var e,t=Object(this),o=t.length>>>0;for(e=0;e<o;e++)if(e in t&&r.call(this,t[e],e,t))return!0;return!1};export{some as default};

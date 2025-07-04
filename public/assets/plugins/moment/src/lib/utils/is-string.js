@@ -1,0 +1,1 @@
+export default function isString(t){return"string"==typeof t||t instanceof String}

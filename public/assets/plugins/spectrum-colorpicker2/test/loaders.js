@@ -1,0 +1,1 @@
+require.config({paths:{jquery:"../docs/jquery-2.1.0"}}),asyncTest("requirejs",(function(){require(["../src/spectrum"],(function(e){ok($.fn.spectrum,"Plugin has been loaded");var r=$("<input id='spec' />").spectrum();r.spectrum("set","red"),equal(r.spectrum("get").toName(),"red","Basic color setting"),r.spectrum("destroy"),QUnit.start()}))}));

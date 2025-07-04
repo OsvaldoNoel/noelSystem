@@ -1,0 +1,1 @@
+beforeEach((function(){this.addMatchers({toHaveValue:function(t){return(this.actual=this.actual.val())===t},toMatchPropertiesOf:function(t){if("object"!==$.type(t))return!1;for(var a in t)if(this.actual[a]!==t[a])return!1;return!0}})}));

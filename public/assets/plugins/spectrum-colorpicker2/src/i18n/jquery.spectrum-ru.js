@@ -1,0 +1,1 @@
+jQuery.spectrum.localization.ru={cancelText:"Отмена",chooseText:"Выбрать",clearText:"Сбросить",noColorSelectedText:"Цвет не выбран",togglePaletteMoreText:"Ещё",togglePaletteLessText:"Скрыть"};

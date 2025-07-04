@@ -1,0 +1,1 @@
+table.dataTable.fixedHeader-floating,table.dataTable.fixedHeader-locked{background-color:var(--bs-body-bg);margin-bottom:0!important;margin-top:0!important;position:relative!important}div.dtfh-floatingparent-foot table{border-top:var(--bs-border-width) solid var(--bs-border-color)}@media print{table.fixedHeader-floating{display:none}}

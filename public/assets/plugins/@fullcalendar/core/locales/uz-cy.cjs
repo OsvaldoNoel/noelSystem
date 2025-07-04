@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var l74={code:"uz-cy",week:{dow:1,doy:4},buttonText:{prev:"Олин",next:"Кейин",today:"Бугун",month:"Ой",week:"Ҳафта",day:"Кун",list:"Кун тартиби"},weekText:"Ҳафта",allDayText:"Кун бўйича",moreLinkText:e=>"+ яна "+e,noEventsText:"Кўрсатиш учун воқеалар йўқ"};exports.default=l74;

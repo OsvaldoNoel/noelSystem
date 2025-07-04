@@ -1,0 +1,1 @@
+define(["../var/document","../core"],(function(e,r){"use strict";var n=["Webkit","Moz","ms"],t=e.createElement("div").style,i={};return function(e){var c=r.cssProps[e]||i[e];return c||(e in t?e:i[e]=function(e){for(var r=e[0].toUpperCase()+e.slice(1),i=n.length;i--;)if((e=n[i]+r)in t)return e}(e)||e)}}));

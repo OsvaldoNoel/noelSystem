@@ -1,0 +1,1 @@
+"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var l41={code:"ja",buttonText:{prev:"前",next:"次",today:"今日",year:"年",month:"月",week:"週",day:"日",list:"予定リスト"},weekText:"週",allDayText:"終日",moreLinkText:e=>"他 "+e+" 件",noEventsText:"表示する予定はありません"};exports.default=l41;

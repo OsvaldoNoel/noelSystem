@@ -1,0 +1,1 @@
+define(["../core"],(function(n){"use strict";n.contains=function(n,o){var e=o&&o.parentNode;return n===e||!(!e||1!==e.nodeType||!(n.contains?n.contains(e):n.compareDocumentPosition&&16&n.compareDocumentPosition(e)))}}));

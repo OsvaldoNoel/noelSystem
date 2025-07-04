@@ -1,0 +1,1 @@
+export const counterIndicator={name:"counter",order:5,onInit:(n,e)=>{e.on("change",(()=>{n.innerText=e.currIndex+1+e.options.indexIndicatorSep+e.getNumItems()}))}};

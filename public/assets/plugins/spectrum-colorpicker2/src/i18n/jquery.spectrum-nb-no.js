@@ -1,0 +1,1 @@
+jQuery.spectrum.localization["nb-no"]={cancelText:"Avbryte",chooseText:"Velg",clearText:"Tilbakestill",noColorSelectedText:"Farge er ikke valgt",togglePaletteMoreText:"Mer",togglePaletteLessText:"Mindre"};

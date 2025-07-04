@@ -1,0 +1,1 @@
+define(["../core"],(function(e){"use strict";var t=/([\0-\x1f\x7f]|^-?\d)|^-$|[^\x80-\uFFFF\w-]/g;function n(e,t){return t?"\0"===e?"�":e.slice(0,-1)+"\\"+e.charCodeAt(e.length-1).toString(16)+" ":"\\"+e}e.escapeSelector=function(e){return(e+"").replace(t,n)}}));

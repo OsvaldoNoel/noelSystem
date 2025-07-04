@@ -1,0 +1,1 @@
+export default{chainWebpack:e=>{e.resolve.alias.set("vue","@vue/compat"),e.module.rule("vue").use("vue-loader").tap((e=>({...e,compilerOptions:{compatConfig:{MODE:2}}})))}};

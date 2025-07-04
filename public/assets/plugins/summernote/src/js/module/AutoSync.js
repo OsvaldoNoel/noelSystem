@@ -1,0 +1,1 @@
+import dom from"../core/dom";export default class AutoSync{constructor(o){this.$note=o.layoutInfo.note,this.events={"summernote.change":()=>{this.$note.val(o.invoke("code"))}}}shouldInitialize(){return dom.isTextarea(this.$note[0])}}

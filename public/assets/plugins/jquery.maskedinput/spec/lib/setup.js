@@ -1,0 +1,1 @@
+function importGrammar(r){for(var a in r)r.hasOwnProperty(a)&&(window[a]=r[a])}var input;importGrammar(jasmine.grammar.FeatureStory),importGrammar(jasmine.grammar.GWT),beforeEach((function(){input=$("<input />").appendTo("body").focus()})),afterEach((function(){input.remove()}));
