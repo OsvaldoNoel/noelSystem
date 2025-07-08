@@ -8,8 +8,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call(S00_TenantSeeder::class);
-        $this->call(S01_ConfigtenantsSeeder::class);
+        $this->call(S01_UserProfileSeeder::class);
         $this->call(S01_UserSeeder::class);
+        $this->call(S02_ConfigtenantsSeeder::class);
         $this->call(S02_MarcaSeeder::class);
         $this->call(S03_PresentationSeeder::class);
         $this->call(S04_CategoriaSeeder::class);

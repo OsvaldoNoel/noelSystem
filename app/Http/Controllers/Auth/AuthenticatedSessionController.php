@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Tenant;
-use App\Models\User;
+use App\Models\userProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,25 +15,21 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
-    /**
-     * Display the login view.
-     */
+
     public function create(): View
     {
         return view('auth.login');
     }
 
-    /**
-     * Valida el CI y devuelve los tenants asociados
-     */
+    //Valida el CI y devuelve los tenants asociados
     public function validateCi(Request $request): JsonResponse
     {
         $request->validate(['ci' => 'required|string|min:3']);
 
-        // Busqueda exacta del CI (sin coincidencias parciales)
-        $users = User::where('ci', $request->ci)->get();
+        // Buscar el perfil con el CI
+        $profile = userProfile::with('users')->where('ci', $request->ci)->first();
 
-        if ($users->isEmpty()) {
+        if (!$profile) {
             return response()->json([
                 'success' => false,
                 'message' => 'Usuario no registrado'
@@ -41,8 +37,9 @@ class AuthenticatedSessionController extends Controller
         }
 
         $options = [];
+        $users = $profile->users;
 
-        // 1. Agregar Landlord primero si existe
+        // 1. Agregar Landlord primero si existe un tenant_id nulo
         if ($users->contains('tenant_id', null)) {
             $options[] = [
                 'id' => 'landlord',
@@ -78,12 +75,47 @@ class AuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
+            $tenant = $user->tenant_id ? Tenant::find($user->tenant_id) : null;
 
-            // Guardar tipo de usuario en sesión
-            session(['user_type' => $user->tenant_id ? 'tenant' : 'landlord']);
+            // Determinar user_type y nombres
+            if ($user->tenant_id === null) {
+                // Usuario landlord (administrador central)
+                $userType = 'landlord';
+                $tenantName = null;
+                $sucursalName = null;
+            } else {
+                // Usuario relacionado a un tenant
+                $tenantName = $tenant->name;
+                $userType = 'tenant';
+                // 1. Determinar si el tenant del usuario es "casa central" de otras sucursales
+                $tiene_sucursales = Tenant::where('sucursal', $user->tenant_id)->exists()
+                    ? true
+                    : false;
+
+                if ($tiene_sucursales) {
+                    if ($user->sucursal === null) {
+                        // Usuario sin sucursal asignada
+                        $sucursalName = "Casa Central";
+                    } else {
+                        // Usuario asignado a una sucursal específica
+                        $sucursalName = Tenant::find($user->sucursal)->name;
+                    }
+                } else {
+                    $sucursalName = null;
+                }
+            }
+
+            // Guardar información en sesión
+            session([
+                'user_type' => $userType,
+                'tenant' => $tenantName,
+                'sucursal' => $sucursalName,
+                'tenant_id' => $user->tenant_id,
+                'sucursal_id' => $user->sucursal
+            ]);
 
             // Redirección basada en tipo de usuario
-            $redirectRoute = $user->tenant_id ? 'homeApp' : 'homeLandlord';
+            $redirectRoute = $userType === 'tenant' ? 'homeApp' : 'homeLandlord';
 
             return response()->json([
                 'redirect' => route($redirectRoute)

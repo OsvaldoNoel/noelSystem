@@ -15,15 +15,26 @@ use App\Livewire\Tenant\Finanzas\BancoTesoreria\BancoTesoreriaController;
 use App\Livewire\Tenant\Finanzas\CajaTesoreria\CajaTesoreriaController;
 use App\Livewire\Tenant\Finanzas\FinanzasController; 
 use App\Livewire\Tenant\Reportes\Compras\ReporteComprasController;
-use App\Livewire\Tenant\Ventas\CarritoController; 
+use App\Livewire\Tenant\Ventas\CarritoController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route(
+            session('user_type') === 'landlord' ? 'homeLandlord' : 'homeApp'
+        );
+    }
+    return redirect()->route('login');
+});
+
  
-Route::prefix('landlord')->group(function () {
+Route::prefix('landlord')->middleware(['user.type:landlord'])->group(function () {
     Route::get('/home', HomeLandlord::class)->name('homeLandlord');
     Route::get('/config', ConfigLandlord::class)->name('configLandlord');
 });
 
-Route::prefix('app')->group(function () {
+Route::prefix('app')->middleware(['user.type:tenant'])->group(function () {
     Route::get('/home', HomeTenant::class)->name('homeApp');
 
     Route::prefix('stock')->group(function () {

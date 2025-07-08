@@ -10,26 +10,12 @@ use Livewire\Component;
 
 class TenantController extends Component
 {
-    public $selected_id, $sucursal, $status;
+    public $selected_id, $name, $sucursal, $status;
     public $componentName = 'Tenant';
     public $search = '';
     public $datos;
     public $is_branch = false; // Para controlar si es sucursal o no
-    public $tenantsList = []; // Lista de Tenants para el select
-
-    // Validación unificada para name
-    #[Rule([
-        'required',
-        'min:3',
-        'max:50',
-        // ValidationRule::unique('tenants')->ignore('selected_id')
-    ], message: [
-        'required' => 'El nombre de la Tenant es requerido',
-        'min' => 'El nombre debe tener al menos tres caracteres',
-        'max' => 'El nombre debe tener como máximo 50 caracteres',
-        'unique' => 'Una tenant con ese nombre ya fue registrada'
-    ])]
-    public $name;
+    public $tenantsList = []; // Lista de Tenants para el select 
 
     public function mount()
     {
@@ -123,7 +109,7 @@ class TenantController extends Component
 
         $this->cancel();
         $this->dispatch('closeModal');
-        $this->dispatch('msg-added');
+        $this->dispatch('registroExitoso', text: 'Empresa Registrada...', bg: 'success');
         $this->updateTable();
     }
 
@@ -150,7 +136,7 @@ class TenantController extends Component
 
         $this->cancel();
         $this->dispatch('closeModal');
-        $this->dispatch('msg-updated');
+        $this->dispatch('registroExitoso', text: 'Editado exitosamente...', bg: 'success');
         $this->updateTable();
     }
 

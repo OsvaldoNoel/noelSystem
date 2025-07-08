@@ -10,24 +10,14 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    // Roles del sistema
-    const ROLE_TENANT = 1;
-    const ROLE_LANDLORD = 2;
-
     protected $fillable = [
         'tenant_id',
-        'role',
-        'ci',
+        'user_profile_id',
+        'sucursal',
         'username',
-        'name',
-        'lastname',
-        'phone',
         'email',
-        'address',
-        'barrio',
-        'city',
-        'status',
-        'password'
+        'password',
+        'status'
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -43,6 +33,11 @@ class User extends Authenticatable
         return $this->belongsTo(Tenant::class);
     }
 
+    public function profile()
+    {
+        return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
+
     public function sales()
     {
         return $this->hasMany(Sale::class, 'tenant_id');
@@ -56,23 +51,23 @@ class User extends Authenticatable
 
     public function scopeLandlords($query)
     {
-        return $query->whereNull('tenant_id')->where('role', self::ROLE_LANDLORD);
+        return $query->whereNull('tenant_id');
     }
 
     public function scopeTenants($query)
     {
-        return $query->whereNotNull('tenant_id')->where('role', self::ROLE_TENANT);
+        return $query->whereNotNull('tenant_id');
     }
 
     // Helpers
     public function isLandlord(): bool
     {
-        return $this->role === self::ROLE_LANDLORD && is_null($this->tenant_id);
+        return is_null($this->tenant_id);
     }
 
     public function isTenant(): bool
     {
-        return $this->role === self::ROLE_TENANT && !is_null($this->tenant_id);
+        return !is_null($this->tenant_id);
     }
 }
 

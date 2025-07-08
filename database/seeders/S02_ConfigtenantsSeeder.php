@@ -6,7 +6,7 @@ use App\Models\Configtenants;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class S01_ConfigtenantsSeeder extends Seeder
+class S02_ConfigtenantsSeeder extends Seeder
 { 
     public function run(): void
     {

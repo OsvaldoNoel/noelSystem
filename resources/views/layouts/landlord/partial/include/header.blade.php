@@ -19,13 +19,22 @@
 	<!-- END mobile-toggler -->
 	
 	<!-- BEGIN brand -->
-	<div class="brand">
-		<a href="index.html" class="brand-logo w-100">
-			<iconify-icon icon="lets-icons:time-progress-duotone" class="fs-24px me-2 text-theme"></iconify-icon>
-			<span class="brand-text fw-500 fs-14px">QUANTUM</span>
-		</a>
-	</div>
-	<!-- END brand -->
+    <div class="brand">
+        <a href="#" class="brand-logo w-100 d-flex align-items-center">
+            <iconify-icon icon="lets-icons:time-progress-duotone" class="fs-24px me-2 text-theme"></iconify-icon>
+            @if (auth()->check())
+                <div class="d-flex flex-column text-center">
+                    <span class="brand-text fw-500 fs-14px text-theme">
+                        {{ session('tenant') ? strtoupper(session('tenant')) : 'SYSTEM ADMIN' }}
+                    </span>
+                    <span class="brand-text fw-500 fs-10px">
+                        {{ session('sucursal') ? strtoupper(session('sucursal')) : '' }}
+                    </span>
+                </div>
+            @endif
+        </a>
+    </div>
+    <!-- END brand -->
 	
 	<!-- BEGIN menu -->
 	<div class="menu">
