@@ -184,6 +184,9 @@
                     action: () => {
                         $wire.cancel();
                         $(`#addModal${TABLE_NAME}`).modal('show');
+                        setTimeout(() => {
+                            $(`#ci_add`).focus();
+                        }, 800);
                     }
                 }
             ];
@@ -269,9 +272,9 @@
                     $(this).find('.ci-input')
                         .prop('disabled', true) // Deshabilita solo el input dentro de este modal
                         .removeClass('text-theme')
-                        .addClass('bg-light bg-opacity-10');  // Gris claro transparente
+                        .addClass('bg-light bg-opacity-10'); // Gris claro transparente
                 });
- 
+
             });
 
             // Eliminar
@@ -326,6 +329,151 @@
             });
         }
 
+        // Función para manejar la navegación con Enter
+        function setupEnterNavigation() {
+            $(document).on('keydown', '[data-next]', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const nextId = $(this).data('next');
+                    if (nextId) {
+                        $('#' + nextId).focus();
+                    }
+                }
+            });
+        }
+
+        // Configuración inicial cuando se abre el modal de creación
+        $wire.on('openCreateModal', () => {
+            $(`#addModal${TABLE_NAME}`).modal('show');
+            setTimeout(() => {
+                $(`#ci_add`).focus();
+            }, 800);
+
+
+        });
+
+        // Cuando se encuentra un perfil
+        $wire.on('profileFound', () => {
+            setTimeout(() => {
+                // Habilitar solo email y poner foco
+                $(`#email_add`).prop('disabled', false)
+                    .removeClass('bg-secondary-subtle')
+                    .focus();
+
+                $(`#btnAddUser`).prop('disabled', false);
+            }, 100);
+        });
+
+        // Cuando no se encuentra un perfil
+        $wire.on('profileNotFound', () => {
+            setTimeout(() => {
+                // Habilitar todos los campos y poner foco en name
+                const fields = ['name_add', 'lastname_add', 'phone_add', 'email_add', 'address_add',
+                    'barrio_add', 'city_add'
+                ];
+                fields.forEach(fieldId => {
+                    $(`#${fieldId}`).prop('disabled', false)
+                        .removeClass('bg-secondary-subtle');
+                });
+                $(`#email_add`).focus();
+                $(`#btnAddUser`).prop('disabled', false);
+            }, 100);
+        });
+
+        // Manejador para errores de validación
+        $wire.on('validationError', ({
+            hasCiError
+        }) => {
+            setTimeout(() => {
+                // Verificar si hay errores antes de intentar acceder a ellos
+                const errors = $wire.serverMemo.errors || {};
+                const errorFields = Object.keys(errors);
+
+                if (hasCiError) {
+                    // Error en CI - deshabilitar todo excepto CI
+                    const fields = ['name_add', 'lastname_add', 'phone_add', 'email_add',
+                        'address_add', 'barrio_add', 'city_add'
+                    ];
+                    fields.forEach(fieldId => {
+                        $(`#${fieldId}`).prop('disabled', true)
+                            .addClass('bg-secondary-subtle');
+                    });
+
+                    $(`#btnAddUser`).prop('disabled', true);
+                    $(`#ci_add`).focus();
+                } else {
+                    // Error en otros campos - mantener estado actual
+                    if ($wire.profileFound) {
+                        // Perfil encontrado: habilitar solo email
+                        $(`#email_add`).prop('disabled', false)
+                            .removeClass('bg-secondary-subtle');
+
+                        // Deshabilitar otros campos
+                        ['name_add', 'lastname_add', 'phone_add', 'address_add',
+                            'barrio_add', 'city_add'
+                        ].forEach(fieldId => {
+                            $(`#${fieldId}`).prop('disabled', true)
+                                .addClass('bg-secondary-subtle');
+                        });
+                    } else {
+                        // Perfil no encontrado: habilitar todos
+                        const fields = ['name_add', 'lastname_add', 'phone_add', 'email_add',
+                            'address_add', 'barrio_add', 'city_add'
+                        ];
+                        fields.forEach(fieldId => {
+                            $(`#${fieldId}`).prop('disabled', false)
+                                .removeClass('bg-secondary-subtle');
+                        });
+                    }
+
+                    $(`#btnAddUser`).prop('disabled', false);
+                }
+            }, 50);
+        });
+
+        // Escuchar cambios en el input de CI
+        let ciTimeout;
+        $(`#addModal${TABLE_NAME} #ci_add`).on({
+            input: function() {
+                clearTimeout(ciTimeout);
+                ciTimeout = setTimeout(() => {
+                    const fields = ['name_add', 'lastname_add', 'phone_add', 'address_add',
+                        'barrio_add', 'city_add'
+                    ];
+                    fields.forEach(fieldId => {
+                        $(`#${fieldId}`).prop('disabled', true)
+                            .addClass('bg-secondary-subtle');
+                    });
+                    $wire.name = null;
+                    $wire.lastname = null;
+                    $wire.phone = null;
+                    $wire.address = null;
+                    $wire.barrio = null;
+                    $wire.city = null;
+                    $wire.email = null;
+                    $wire.resetErrors();
+
+                    $(`#email_add`).prop('disabled', true)
+                        .addClass('bg-secondary-subtle');
+
+                }, 300);
+            },
+            keydown: function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $(this).blur();
+                }
+            },
+            blur: function() {
+                const ci = $(this).val();
+                if (ci && ci.length >= 1) {
+                    $wire.dispatch('searchProfile', {
+                        ci: ci
+                    });
+                }
+            }
+        });
+
         // Escuchar actualizaciones
         $wire.on('tableUpdated', ({
             datos
@@ -355,8 +503,16 @@
             }, 10);
         });
 
+        // Manejar tecla Escape para cerrar modales
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                $wire.dispatch('closeModal');
+            }
+        });
+
         // Iniciar la tabla
         initDataTable();
         setupResizeObserver();
+        setupEnterNavigation();
     </script>
 @endscript

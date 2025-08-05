@@ -18,7 +18,7 @@
 <!-- =============== end DATATABLES ================== -->
 
 <link href="{{asset('assets/plugins/tomSelect/tom-select.default.min.css')}}" rel="stylesheet" type="text/css" >
-<link href="{{asset('assets/css/custom.css')}}" rel="stylesheet" type="text/css" >
+<link href="{{asset('assets/css/custom.css')}}" rel="stylesheet" type="text/css" > 
 
 
 

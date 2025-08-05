@@ -20,6 +20,7 @@
                 <tr>
                     <th class="text-theme">ACT</th>
                     <th class="text-theme">EMPRESA</th>
+                    <th class="text-theme">TIPO</th> <!-- Nueva columna -->
                     <th class="text-theme">SUCURSAL</th>
                     <th></th>
                 </tr>
@@ -66,7 +67,44 @@
                     }
                 },
                 {
-                    targets: 2,
+                    targets: 2, // Nueva columna para el tipo de tenant
+                    sortable: false,
+                    render: function(td, cellData, rowData) {
+                        // Solo mostrar para empresas principales (no sucursales)
+                        if (rowData.sucursal) {
+                            return ''; // No mostrar nada para sucursales
+                        }
+
+                        // Definir los estilos según el tipo
+                        const types = {
+                            1: {
+                                class: 'bg-teal',
+                                text: 'POS'
+                            },
+                            2: {
+                                class: 'bg-yellow',
+                                text: 'Servicios'
+                            },
+                            3: {
+                                class: 'bg-info',
+                                text: 'MicroVentas'
+                            },
+                            4: {
+                                class: 'bg-red',
+                                text: 'Restaurante'
+                            }
+                        };
+
+                        const type = rowData.tenant_type || 1; // Default a POS si no hay tipo
+                        const typeInfo = types[type] || types[1];
+
+                        return `<span class="badge ${typeInfo.class} bg-opacity-25 text-white py-4px px-2 fs-9px d-inline-flex align-items-center">
+                    <i class="fa fa-circle opacity-5 fs-4px fa-fw me-2"></i> ${typeInfo.text}
+                </span>`;
+                    }
+                },
+                {
+                    targets: 3,
                     visible: false, // Columna oculta
                     data: 'sucursal', // Solo para cálculos internos
                     render: function(td, cellData, rowData) {
@@ -74,25 +112,25 @@
                     }
                 },
                 {
-                    targets: 3,
+                    targets: 4,
                     sortable: false,
                     render: function() {
                         return '<div class="dropdown text-end"><a class="nav-link fs-5" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-ellipsis"></i></a>' +
                             '<ul class="dropdown-menu bg-black">' +
                             '<li><a class="dropdown-item text-theme btnEditar"><i class="bi-pencil-square"></i> Edit </a></li>' +
-                            '<li><a class="dropdown-item text-theme btnEliminar"><i class="bi-trash3-fill"></i> Delete </a></li>' +
+                            // '<li><a class="dropdown-item text-theme btnEliminar"><i class="bi-trash3-fill"></i> Delete </a></li>' +
                             '</ul>' +
                             '</div>';
                     },
                 },
-                // Columna 4: Orden (oculta)
+                // Columna 5: Orden (oculta)
                 {
-                    targets: 4,
+                    targets: 5,
                     data: 'sort_order',
                     visible: false
                 },
                 {
-                    targets: 5,
+                    targets: 6,
                     visible: false,
                     data: 'is_main'
                 }
@@ -148,13 +186,21 @@
                 .attr('autocomplete', 'off');
             $('div.dt-search label').hide();
 
-            // Cambio de status
+            // Cambio de status 
             $(`#${TABLE_NAME} tbody`).on('click', '.btnStatus', function() {
-                const row = table.row($(this).parents('tr')).data();
-                row.status = row.status == 0 ? 1 : 0;
-                table.row($(this).parents('tr')).data(row).draw();
+                const rowData = table.row($(this).closest('tr')).data();
+                if (!rowData) return; // Protección contra datos undefined
+
+                // Actualizar el estado
+                const newStatus = rowData.status == 0 ? 1 : 0;
+                table.row($(this).closest('tr')).data({
+                    ...rowData,
+                    status: newStatus
+                }).draw();
+
+                // Enviar evento a Livewire
                 $wire.dispatch(`status${TABLE_NAME}`, {
-                    id: row.id
+                    id: rowData.id
                 });
             });
 
@@ -164,6 +210,7 @@
 
                 // Actualizar solo el nombre
                 $wire.set('selected_id', row.id);
+                $wire.set('sucursal', row.sucursal);
                 $wire.set('name', row.name);
 
                 // Mostrar modal de edición
@@ -171,19 +218,19 @@
             });
 
             // Eliminar
-            $(`#${TABLE_NAME} tbody`).on('click', '.btnEliminar', function() {
-                const row = table.row($(this).parents('tr')).data();
-                window.Livewire.dispatch('swal:confirm', {
-                    background: 'info',
-                    html: `Eliminar <b><i>"${row.name}"</i></b> del registro?`,
-                    next: {
-                        event: `delete${TABLE_NAME}`,
-                        params: {
-                            id: row.id
-                        }
-                    }
-                });
-            });
+            // $(`#${TABLE_NAME} tbody`).on('click', '.btnEliminar', function() {
+            //     const row = table.row($(this).parents('tr')).data();
+            //     window.Livewire.dispatch('swal:confirm', {
+            //         background: 'info',
+            //         html: `Eliminar <b><i>"${row.name}"</i></b> del registro?`,
+            //         next: {
+            //             event: `delete${TABLE_NAME}`,
+            //             params: {
+            //                 id: row.id
+            //             }
+            //         }
+            //     });
+            // });
         }
 
         // Función para cargar empresas principales (sucursal = null) 
@@ -201,24 +248,149 @@
             });
         }
 
+        //variables de la modal
+        const branchContainer = $(`#addModal${TABLE_NAME} .branch-select-container`);
+        const leaderContainer = $(`#addModal${TABLE_NAME} .leader-select-container`);
+        const ownerContainer = $(`#addModal${TABLE_NAME} .owner-select-container`);
+
+        // Escuchar cambios en el select de empresas principales
+        $(`#addModal${TABLE_NAME} #selectEmpresasPrincipales`).on('change', function() {
+            const tenantId = $(this).val();
+            if (tenantId) {
+                $wire.set('sucursal', tenantId);
+                $wire.dispatch('searchOwner', {
+                    tenantId: tenantId
+                });
+            }
+        });
+
         // Manejador de cambio de tipo en creación
         $(document).on('change', `#addModal${TABLE_NAME} input[name="tenant_type"]`, function() {
             const isBranch = $(this).val() === 'sucursal';
-            const selectContainer = $(`#addModal${TABLE_NAME} .branch-select-container`);
 
             $wire.is_branch = isBranch
-            selectContainer.removeClass('d-none');
-            // Manejar la UI directamente
-            if (isBranch) {
-                if ($('#selectEmpresasPrincipales option').length <= 1) {
 
-                    cargarEmpresasPrincipales();
+            // Cargar empresas principales si es sucursal
+            if (isBranch && $('#selectEmpresasPrincipales option').length <= 1) {
+                cargarEmpresasPrincipales();
+            }
+
+            // Configuración de textos y visibilidad
+            $('#labelTitleSelect').text(isBranch ? 'Nombre para la Sucursal' : 'Nombre para la nueva Empresa');
+            $('#buttonAddTenant').text(isBranch ? 'Registrar Sucursal' : 'Registrar Empresa y Propietario');
+            $(`#nameAdd${TABLE_NAME}`).focus();
+
+            branchContainer.toggleClass('d-none', !isBranch);
+            leaderContainer.toggleClass('d-none', isBranch);
+            ownerContainer.addClass('d-none');
+
+            $wire.tenant_type = null;
+            $wire.sucursal = null;
+            $wire.name = null;
+            $wire.ci = null;
+            $wire.resetErrors();
+            resetFiels();
+            removeAttr();
+
+        });
+
+        // Agregar manejador para el tipo de empresa
+        $(document).on('change', `#addModal${TABLE_NAME} input[name="tenant_type_id"]`, function() {
+            $wire.set('tenant_type', $(this).val());
+        });
+
+        function resetFiels() {
+            $wire.name_user = null;
+            $wire.lastname = null;
+            $wire.phone = null;
+            $wire.address = null;
+            $wire.barrio = null;
+            $wire.city = null;
+        }
+
+        function removeAttr() {
+            const inputFields = ['ci', 'name_user', 'lastname', 'phone', 'address', 'barrio', 'city'];
+            inputFields.forEach(fieldId => {
+                $(`#${fieldId}`).prop('disabled', false)
+                    .removeClass('bg-secondary-subtle');
+            });
+        }
+
+        // Escuchar cambios en el input de CI 
+        let ciTimeout;
+        $(`#addModal${TABLE_NAME} .ci-input`).on({
+            input: function() {
+                clearTimeout(ciTimeout);
+                ciTimeout = setTimeout(() => {
+                    resetFiels();
+                    removeAttr();
+                    ownerContainer.addClass('d-none');
+                }, 100);
+            },
+            keydown: function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $(this).blur();
                 }
-            } else {
-                $wire.set('sucursal', null); // Resetear sucursal al cambiar tipo
-                selectContainer.addClass('d-none');
+            },
+            blur: function() {
+                const ci = $(this).val();
+                $wire.ci = ci;
+                $wire.dispatch('searchProfile', {
+                    ci: ci
+                });
             }
         });
+
+        // Manejar respuesta cuando se encuentra el propietario
+        $wire.on('ownerFound', () => {
+            setTimeout(() => {
+                const fields = ['ci', 'name_user', 'lastname', 'phone', 'address', 'barrio', 'city',
+                    'email'
+                ];
+                fields.forEach(fieldId => {
+                    $(`#${fieldId}`).prop('disabled', true)
+                        .addClass('bg-secondary-subtle');
+                });
+                ownerContainer.removeClass('d-none');
+                $(`#name`).focus();
+            }, 100);
+        });
+
+        // Manejar respuesta cuando se encuentra el perfil
+        $wire.on('profileFound', () => {
+            setTimeout(() => {
+                const fields = ['name_user', 'lastname', 'phone', 'address', 'barrio', 'city'];
+                fields.forEach(fieldId => {
+                    const input = $(`#${fieldId}`);
+                    input.prop('disabled', true);
+                    input.addClass('bg-secondary-subtle');
+                });
+                ownerContainer.removeClass('d-none');
+                $(`#email`).focus();
+            }, 100);
+        });
+
+        // Manejar respuesta cuando no se encuentra el perfil
+        $wire.on('profileNotFound', () => {
+            setTimeout(() => {
+                ownerContainer.removeClass('d-none');
+                $(`#name_user`).focus();
+            }, 100);
+        });
+
+        // Manejar el tab en los inputs al presionar enter
+        function setupEnterNavigation() {
+            $('#addModal' + TABLE_NAME + ' [data-next]').on('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const nextId = $(this).data('next');
+                    if (nextId) {
+                        $('#' + nextId).focus();
+                    }
+                }
+            });
+        }
 
         // Inicialización de la tabla
         function initDataTable(data) {
@@ -268,6 +440,12 @@
             $(`#addModal${TABLE_NAME} .branch-select-container`).addClass('d-none');
             $(`#new_company`).prop('checked', true);
             $(`#addModal${TABLE_NAME}`).modal('show');
+
+            setTimeout(() => {
+                $(`#nameAdd${TABLE_NAME}`).focus();
+            }, 1000);
+
+            setTimeout(setupEnterNavigation, 300); // Delay para asegurar que el modal esté listo
         });
 
         // Iniciar la tabla

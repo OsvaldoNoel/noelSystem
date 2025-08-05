@@ -6,7 +6,7 @@ use App\Models\Marca;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class S02_MarcaSeeder extends Seeder
+class S03_MarcaSeeder extends Seeder
 { 
     public function run(): void
     {

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('amount', 12, 2)->unsigned()->nullable(); // 10 enteros + 2 decimales
             $table->date('date_bill')->nullable();
             $table->unsignedTinyInteger('status')->default(1); // 1=activo, 2=inactivo, 3=suspendido
+            $table->unsignedTinyInteger('tenant_type')->default(1); // 1=POS, 2=Servicios, 3=MicroVentas, 4=Restaurante
 
             $table->timestamps(); 
         });

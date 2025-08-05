@@ -30,35 +30,35 @@ class S01_UserProfileSeeder extends Seeder
         $user->city = "Limpio";
         $user->save();
 
-        $user = new UserProfile();
-        $user->ci = "4366832";
-        $user->name = "Aida Noemi";
-        $user->lastname = "Torres Benitez";
-        $user->phone = "0981 333 444";
-        $user->address = "Calle San Blas";
-        $user->barrio = "San Blas";
-        $user->city = "Limpio";
-        $user->save();
+        // $user = new UserProfile();
+        // $user->ci = "4366832";
+        // $user->name = "Aida Noemi";
+        // $user->lastname = "Torres Benitez";
+        // $user->phone = "0981 333 444";
+        // $user->address = "Calle San Blas";
+        // $user->barrio = "San Blas";
+        // $user->city = "Limpio";
+        // $user->save();
 
-        $user = new UserProfile();
-        $user->ci = "6706244";
-        $user->name = "Magali";
-        $user->lastname = "Gonzalez Moraez";
-        $user->phone = "0981 555 999";
-        $user->address = "Calle Salado";
-        $user->barrio = "Salado";
-        $user->city = "Limpio";        
-        $user->save();
+        // $user = new UserProfile();
+        // $user->ci = "6706244";
+        // $user->name = "Magali";
+        // $user->lastname = "Gonzalez Moraez";
+        // $user->phone = "0981 555 999";
+        // $user->address = "Calle Salado";
+        // $user->barrio = "Salado";
+        // $user->city = "Limpio";        
+        // $user->save();
 
-        $user = new UserProfile();
-        $user->ci = "6283281";
-        $user->name = "Fatima";
-        $user->lastname = "Gonzalez Gonzalez";
-        $user->phone = "0981 222 333";
-        $user->address = "Camino a piquete";
-        $user->barrio = "Rincon del Peñon";
-        $user->city = "Limpio";        
-        $user->save();
+        // $user = new UserProfile();
+        // $user->ci = "6283281";
+        // $user->name = "Fatima";
+        // $user->lastname = "Gonzalez Gonzalez";
+        // $user->phone = "0981 222 333";
+        // $user->address = "Camino a piquete";
+        // $user->barrio = "Rincon del Peñon";
+        // $user->city = "Limpio";        
+        // $user->save();
 
     }
 }

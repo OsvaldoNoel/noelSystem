@@ -57,7 +57,7 @@ table.table.dataTable.table-hover>tbody>tr:hover>* {
 
 .datepicker .datepicker-days table tbody tr td.new {
     color: rgba(var(--bs-body-color-rgb), .2);
-}  
+}
 
 .ts-dropdown,
 .ts-dropdown.form-control,
@@ -176,16 +176,16 @@ input[type=number]::-webkit-outer-spin-button {
 
 .dt-scroll-body::-webkit-scrollbar-track {
     background: transparent;
-} 
- 
+}
+
 .dt-scroll-body {
     scrollbar-width: thin;
     scrollbar-color: #08d5ec2f transparent;
-} 
+}
 
 /* Estilo para nombres principales del datatable Tenants*/
-td .strong { 
-    font-weight: 600; 
+td .strong {
+    font-weight: 600;
     color: #00eeff;
 }
 
@@ -201,4 +201,28 @@ td .ms-5::before {
     left: -1rem;
 }
 
- 
+/* Estilo para checkboxes deshabilitados */
+.form-check-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Estilo para labels - siempre activos */
+.form-check-label {
+    cursor: pointer;
+    color: white !important;
+    /* Color de texto normal */
+    opacity: 1 !important;
+    /* Máxima opacidad */
+}
+
+/* Mejor contraste para badges */
+.badge {
+    font-weight: 500;
+}
+
+/* Estilo para items de lista activos */
+.list-group-item.active .form-check-label {
+    color: white !important;
+}
+

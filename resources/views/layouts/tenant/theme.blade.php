@@ -3,6 +3,7 @@
 
 <head>
     @include('layouts.tenant.partial.include.head')
+    @stack('styles') <!-- Aquí se cargarán los estilos específicos --> 
 </head>
 
 <body>
@@ -90,6 +91,15 @@
         });
 
         Livewire.on('registroExitoso', (msg) => {
+            window.dispatchEvent(new CustomEvent('swal:toast', {
+                detail: {
+                    text: msg.text,
+                    background: msg.bg,
+                }
+            }));
+        });
+
+        Livewire.on('notify', (msg) => {
             window.dispatchEvent(new CustomEvent('swal:toast', {
                 detail: {
                     text: msg.text,

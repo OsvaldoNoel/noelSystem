@@ -35,10 +35,10 @@ Route::prefix('landlord')->middleware(['user.type:landlord'])->group(function ()
 });
 
 Route::prefix('app')->middleware(['user.type:tenant'])->group(function () {
-    Route::get('/home', HomeTenant::class)->name('homeApp');
+    Route::get('/home', HomeTenant::class)->name('homeApp');  //->middleware('permission:ver-dashboard')
 
     Route::prefix('stock')->group(function () {
-        Route::get('/admin', StockAdmin::class)->name('stockAdmin'); 
+        Route::get('/admin', StockAdmin::class)->name('stockAdmin')->middleware('permission:gestionar-stock'); 
         Route::get('/productos', ProductController::class)->name('productos'); 
         Route::get('/compras', ComprasController::class)->name('compras'); 
     });
@@ -76,3 +76,14 @@ Route::prefix('app')->middleware(['user.type:tenant'])->group(function () {
 
     }); 
 });
+
+
+// // Rutas solo para tenants de tipo POS
+// Route::middleware(['tenant.type:1'])->group(function () {
+//     Route::get('/pos/dashboard', [PosController::class, 'dashboard']);
+// });
+
+// // Rutas para restaurantes
+// Route::middleware(['tenant.type:4'])->group(function () {
+//     Route::get('/restaurante/mesas', [RestauranteController::class, 'mesas']);
+// });

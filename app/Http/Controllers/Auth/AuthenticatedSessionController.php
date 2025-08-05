@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\Tenant;
-use App\Models\userProfile;
+use App\Models\User;
+use App\Models\UserProfile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -74,6 +75,7 @@ class AuthenticatedSessionController extends Controller
             $request->authenticate();
             $request->session()->regenerate();
 
+            /** @var User $user */ // Esto ayuda al IDE a reconocer el tipo
             $user = Auth::user();
             $tenant = $user->tenant_id ? Tenant::find($user->tenant_id) : null;
 
@@ -111,8 +113,12 @@ class AuthenticatedSessionController extends Controller
                 'tenant' => $tenantName,
                 'sucursal' => $sucursalName,
                 'tenant_id' => $user->tenant_id,
-                'sucursal_id' => $user->sucursal
+                'sucursal_id' => $user->sucursal,
+                'user_id' => $user->id // Agregar user_id para referencia
             ]);
+
+            // Agregar el tenant al request para que esté disponible inmediatamente
+            $request->merge(['tenant' => $tenant]);
 
             // Redirección basada en tipo de usuario
             $redirectRoute = $userType === 'tenant' ? 'homeApp' : 'homeLandlord';

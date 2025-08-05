@@ -1,46 +1,54 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        @include('layouts.landlord.partial.include.head')	
-    </head>
-    <body >
-        @include('layouts.landlord.partial.include.loader')
 
-        <!-- BEGIN #app -->
-        <div id="app" class="app app-footer-fixed"> 
+<head>
+    @include('layouts.landlord.partial.include.head')
+    @stack('styles') <!-- Aquí se cargarán los estilos específicos --> 
+</head>
 
-            <livewire:landlord.sidebar />
-            
-            <!-- BEGIN #content -->
-            <div id="content" class="app-content"> 
+<body>
+    @include('layouts.landlord.partial.include.loader')
 
-                {{ $slot }} 
+    <!-- BEGIN #app -->
+    <div id="app" class="app app-footer-fixed">
 
-            </div>
-            <!-- END #content -->
+        <livewire:landlord.sidebar />
 
-            @include('layouts.landlord.partial.include.footer')
-            @include('layouts.landlord.partial.include.scroll-top-btn') 
+        <!-- BEGIN #content -->
+        <div id="content" class="app-content">
+
+            {{ $slot }}
+
         </div>
-        <!-- END #app -->
-        
-        @include('layouts.landlord.partial.include.scripts')
-    </body>
+        <!-- END #content -->
+
+        @include('layouts.landlord.partial.include.footer')
+        @include('layouts.landlord.partial.include.scroll-top-btn')
+    </div>
+    <!-- END #app -->
+
+    @include('layouts.landlord.partial.include.scripts')
+
+</body>
+
 </html>
 
 
+
+
 <script>
-    document.addEventListener('livewire:init', () => { 
-        let value = document.getElementById("menuSuperior").value; 
+    document.addEventListener('livewire:init', () => {
+        let value = document.getElementById("menuSuperior").value;
         if (value == 1) {
-            document.getElementById("app").className = "app app-footer-fixed app-with-top-nav app-without-sidebar"; 
+            document.getElementById("app").className =
+                "app app-footer-fixed app-with-top-nav app-without-sidebar";
             let intro = document.getElementById('footer');
-            intro.style.cssText = 'margin-left: 1.0625rem;'; 
-            document.getElementById("menuSuperior").checked = true; 
-        } 
+            intro.style.cssText = 'margin-left: 1.0625rem;';
+            document.getElementById("menuSuperior").checked = true;
+        }
 
         Livewire.on('showModal', (name) => {
-            $('#dataModal' + name).modal('show'); 
+            $('#dataModal' + name).modal('show');
         });
         Livewire.on('closeModal', () => {
             const openModals = document.querySelectorAll('.modal.show');
@@ -66,21 +74,54 @@
             });
         });
 
-        Livewire.on('menuSuperior', () => {   
-            let value = document.getElementById("menuSuperior").value;  
+        Livewire.on('menuSuperior', () => {
+            let value = document.getElementById("menuSuperior").value;
             if (value == 0) {
-                document.getElementById("app").className = "app app-footer-fixed app-with-top-nav app-without-sidebar"; 
+                document.getElementById("app").className =
+                    "app app-footer-fixed app-with-top-nav app-without-sidebar";
                 let intro = document.getElementById('footer');
-                intro.style.cssText = 'margin-left: 1.0625rem;'; 
-                document.getElementById("menuSuperior").value = 1;  
+                intro.style.cssText = 'margin-left: 1.0625rem;';
+                document.getElementById("menuSuperior").value = 1;
             } else {
-                document.getElementById("app").className = "app app-footer-fixed"; 
+                document.getElementById("app").className = "app app-footer-fixed";
                 let intro = document.getElementById('footer');
-                intro.style.cssText = 'margin-left: 14.0625rem;'; 
-                document.getElementById("menuSuperior").value = 0; 
-            }  
-        }); 
-         
+                intro.style.cssText = 'margin-left: 14.0625rem;';
+                document.getElementById("menuSuperior").value = 0;
+            }
+        });
+
+        Livewire.on('registroExitoso', (msg) => {
+            window.dispatchEvent(new CustomEvent('swal:toast', {
+                detail: {
+                    text: msg.text,
+                    background: msg.bg,
+                }
+            }));
+        });
+
+        Livewire.on('toastError', (data) => {
+            // Crear toast 
+            const toast = document.createElement('div');
+            toast.className = 'toast show soft-pink-toast';
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+                                <div class="toast-body text-center" style="padding: 1rem;">
+                                    <div class="toast-title-alert">` + data.title + `</div>
+                                    <hr class="toast-divider">
+                                    <div class="toast-message-alert">` + data.msg + `</div>
+                                </div>
+                            `;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 150);
+            }, 10000);
+        })
+
     });
 </script>
 
@@ -122,14 +163,12 @@
             toastElement.remove();
         });
     }
-
-    
 </script>
 
 
 
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         localStorage.setItem("color", 'color-5');
         localStorage.setItem("primary", '#884A39');
         localStorage.setItem("secondary", '#C38154');
