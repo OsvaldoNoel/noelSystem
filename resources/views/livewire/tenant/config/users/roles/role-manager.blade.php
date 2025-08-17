@@ -53,7 +53,7 @@
                                                 <div class="d-flex align-items-center flex-grow-1 py-2 px-3">
                                                     <input type="text" wire:model="editedRoleName"
                                                         @keydown.enter="updateRoleName" @keydown.escape="cancelEditing"
-                                                        class="form-control form-control-sm me-2">
+                                                        class="form-control form-control-sm input-edit me-2">
                                                     <button wire:click="updateRoleName"
                                                         class="btn btn-sm btn-success me-1" title="Guardar cambios">
                                                         <i class="fas fa-check"></i>
@@ -170,7 +170,7 @@
 @push('styles')
     <style>
         /* Estilos para el modo edición */
-        .form-control-sm {
+        .input-edit {
             height: calc(1.5em + 0.5rem + 2px);
             padding: 0.25rem 0.5rem;
             font-size: 0.875rem;

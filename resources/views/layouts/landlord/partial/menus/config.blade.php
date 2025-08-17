@@ -1,5 +1,5 @@
-<div class="menu-item {{ Request::routeIs('configLandlord') ? 'active' : '' }}">
-    <a href="{{ route('configLandlord') }}" class="menu-link">
+<div class="menu-item {{ Request::routeIs('landlord.config') ? 'active' : '' }}">
+    <a href="{{ route('landlord.config') }}" class="menu-link">
         <span class="menu-icon">
             <iconify-icon icon="ph:rocket-duotone"></iconify-icon>
         </span>

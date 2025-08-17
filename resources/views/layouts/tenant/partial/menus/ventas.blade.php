@@ -7,8 +7,8 @@
         <span class="menu-caret"><b class="caret"></b></span>
     </a>
     <div class="menu-submenu"> 
-        <div class="menu-item {{ Request::routeIs('carrito') ? 'active' : '' }}">
-            <a href="{{ route('carrito') }}" class="menu-link">
+        <div class="menu-item {{ Request::routeIs('app.carrito') ? 'active' : '' }}">
+            <a href="{{ route('app.carrito') }}" class="menu-link">
                 <span class="menu-text">Carrito</span>
             </a>
         </div>

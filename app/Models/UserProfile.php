@@ -14,7 +14,8 @@ class UserProfile extends Model
         'phone',
         'address',
         'barrio',
-        'city'
+        'city',
+        'profile_photo_path',
     ];
 
     public function users()

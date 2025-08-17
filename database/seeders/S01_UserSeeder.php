@@ -15,6 +15,8 @@ class S01_UserSeeder extends Seeder
         $user->username = "3707064";
         $user->email = "noel@gmail.com";
         $user->password = '$2y$12$s0GaHxRxU1wmGqESrZoVZO8vBg5gPttoXTjHB9GRivQvtOFRNvV9i';
+        $user->email_verified_at = now();
+        $user->password_changed_at = now(); // Simular que la contraseña ha sido cambiada
         $user->save();
 
         // $user = new User();
@@ -30,6 +32,8 @@ class S01_UserSeeder extends Seeder
         $user->username = "4898172";
         $user->email = "ana@gmail.com";
         $user->password = '$2y$12$/NxzAvIP/LJvjfZgyCFcQ.6HU6yrzYaW9fJOSlkGTpK7C2MAyQ5aC';
+        $user->email_verified_at = now();
+        $user->password_changed_at = now(); // Simular que la contraseña ha sido cambiada
         $user->save();
 
         // $user = new User();

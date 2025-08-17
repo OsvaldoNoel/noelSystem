@@ -13,23 +13,26 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         // Middlewares globales (se ejecutan en cada petición)
         $middleware->web([
-            \App\Http\Middleware\RefreshUserPermissions::class,
-            \App\Http\Middleware\BindTenant::class,
+            \App\Http\Middleware\User\RefreshUserPermissions::class,
+            \App\Http\Middleware\Tenant\BindTenant::class, 
         ]);
 
         // Middlewares de API (si tienes)
         $middleware->api([
-            \App\Http\Middleware\BindTenant::class,
+            \App\Http\Middleware\Tenant\BindTenant::class,
         ]);
 
         // Middlewares con alias (para usar en rutas)
         $middleware->alias([
-            'tenant.type' => \App\Http\Middleware\CheckTenantType::class,
-            'user.type' => \App\Http\Middleware\CheckUserType::class,
-            'protect.owner' => \App\Http\Middleware\ProtectOwner::class,
-            'tenant.role' => \App\Http\Middleware\VerifyTenantRole::class,
-            'tenant.permission' => \App\Http\Middleware\CheckTenantPermissions::class,
-            'tenant.branch' => \App\Http\Middleware\CheckBranchAccess::class,
+            'bind.tenant' => \App\Http\Middleware\Tenant\BindTenant::class,
+            'tenant.type' => \App\Http\Middleware\Tenant\CheckTenantType::class,
+            'user.type' => \App\Http\Middleware\User\CheckUserType::class,
+            'protect.owner' => \App\Http\Middleware\User\ProtectOwner::class,
+            'tenant.role' => \App\Http\Middleware\Tenant\VerifyTenantRole::class,
+            'tenant.permission' => \App\Http\Middleware\Tenant\CheckTenantPermissions::class,
+            'cache.permission' => \App\Http\Middleware\User\CachePermissionChecks::class,
+            'tenant.branch' => \App\Http\Middleware\Branch\CheckBranchAccess::class,
+            'password.changed' => \App\Http\Middleware\User\EnsurePasswordChanged::class,
         ]);
 
         // Agrupar middlewares para reutilización

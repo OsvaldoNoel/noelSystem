@@ -27,9 +27,11 @@
                                     <div>
                                         @if ($user['is_owner'])
                                             <span class="badge bg-purple text-black">Propietario</span>
-                                        @elseif(!empty($user['roles']))
-                                            <span class="badge bg-info text-black">
-                                                {{ count($user['roles']) }} rol(es)
+                                        @elseif($user['is_admin'])
+                                            <span class="badge bg-info text-black">Admin</span>
+                                        @elseif($user['roles_count'] > 0)
+                                            <span class="badge bg-primary text-black">
+                                                {{ $user['roles_count'] }} rol(es)
                                             </span>
                                         @endif
                                     </div>
@@ -61,19 +63,25 @@
                                 <div class="row">
                                     <div class="col-2 mb-3">
                                         @foreach ($availableRoles as $role)
-                                            <div class="form-check mb-3">
+                                            <div class="form-check mb-3"
+                                                wire:key="role-checkbox-{{ $role['id'] }}-{{ md5(serialize($userRoles)) }}">
                                                 <input class="form-check-input" type="checkbox"
-                                                    id="role-{{ $role['id'] }}" value="{{ $role['name'] }}"
-                                                    wire:model="userRoles" wire:click="updateUserRoles"
-                                                    @if ($role['name'] === 'Propietario' || $selectedUser->hasRole('Propietario')) disabled
-                                                       @checked($selectedUser->hasRole('Propietario'))
-                                                   @else
-                                                       @checked(in_array($role['name'], $userRoles)) @endif>
+                                                    id="role-{{ $role['id'] }}" wire:model.live="userRoles"
+                                                    wire:change="updateUserRoles('{{ $role['name'] }}', $event.target.checked)"
+                                                    value="{{ $role['name'] }}"
+                                                    @if ($this->shouldDisableCheckbox($role, $selectedUser)) disabled @endif
+                                                    @checked(in_array($role['name'], $userRoles))>
                                                 <label class="form-check-label d-flex align-items-center"
                                                     for="role-{{ $role['id'] }}">
                                                     {{ $role['name'] }}
                                                     @if ($role['is_predefined'])
                                                         <span class="text-yellow">**</span>
+                                                    @endif
+                                                    @if ($this->shouldShowLockIcon($role, $selectedUser) && $this->shouldDisableCheckbox($role, $selectedUser))
+                                                        <span class="text-danger ms-1"
+                                                            title="Restricciones de asignación">
+                                                            <i class="fas fa-lock"></i>
+                                                        </span>
                                                     @endif
                                                 </label>
                                             </div>
@@ -172,3 +180,18 @@
         </div>
     </div>
 </div>
+
+
+
+<script>
+    document.addEventListener('livewire:initialized', () => {
+        Livewire.on('refresh-checkboxes', () => {
+            // Forzar actualización de los checkboxes
+            console.log('Refreshing checkboxes...');
+            const checkboxes = document.querySelectorAll('.form-check-input');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = checkbox.hasAttribute('checked');
+            });
+        });
+    });
+</script>

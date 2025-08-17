@@ -7,13 +7,13 @@
         <span class="menu-caret"><b class="caret"></b></span>
     </a>
     <div class="menu-submenu">
-        <div class="menu-item {{ Request::routeIs('usersTenant') ? 'active' : '' }}">
-            <a href="{{ route('usersTenant') }}" class="menu-link">
+        <div class="menu-item {{ Request::routeIs('app.usersTenant') ? 'active' : '' }}">
+            <a href="{{ route('app.usersTenant') }}" class="menu-link">
                 <span class="menu-text">Usuarios</span>
             </a>
         </div>
-        <div class="menu-item {{ Request::routeIs('tesoreriaConfig') ? 'active' : '' }}">
-            <a href="{{ route('tesoreriaConfig') }}" class="menu-link">
+        <div class="menu-item {{ Request::routeIs('app.tesoreriaConfig') ? 'active' : '' }}">
+            <a href="{{ route('app.tesoreriaConfig') }}" class="menu-link">
                 <span class="menu-text">Tesoreria</span>
             </a>
         </div> 

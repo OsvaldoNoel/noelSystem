@@ -1,5 +1,5 @@
-<div class="menu-item {{ Request::routeIs('homeApp') ? 'active' : '' }}">
-    <a href="{{ route('homeApp') }}" class="menu-link">
+<div class="menu-item {{ Request::routeIs('app.home') ? 'active' : '' }}">
+    <a href="{{ route('app.home') }}" class="menu-link">
         <span class="menu-icon">
             <iconify-icon icon="ph:rocket-duotone"></iconify-icon>
         </span>

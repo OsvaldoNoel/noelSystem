@@ -226,3 +226,17 @@ td .ms-5::before {
     color: white !important;
 }
 
+.app-footer-fixed {
+    padding-top: 50px;
+} 
+
+.app-sidebar {
+    top: 50px;
+} 
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header-center {
+        display: none;
+    }
+}

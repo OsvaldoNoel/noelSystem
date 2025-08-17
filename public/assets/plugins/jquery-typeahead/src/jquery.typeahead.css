@@ -214,9 +214,9 @@
   color: #555;
 }
 .typeahead__container button:hover, .typeahead__container button:focus {
-  color: #3c3c3c;
+  color: rgb(59.5, 59.5, 59.5);
   background-color: #f5f5f5;
-  border-color: #b3b3b3;
+  border-color: rgb(178.5, 178.5, 178.5);
 }
 .typeahead__container button:active, .typeahead__container button.active {
   background-image: none;
@@ -311,32 +311,32 @@
 .typeahead__list .typeahead__item:not([disabled]) > a:focus, .typeahead__list .typeahead__item:not([disabled]).active > a, .typeahead__dropdown .typeahead__dropdown-item:not([disabled]) > a:hover,
 .typeahead__dropdown .typeahead__dropdown-item:not([disabled]) > a:focus, .typeahead__dropdown .typeahead__dropdown-item:not([disabled]).active > a {
   background-color: #f5f5f5;
-  color: #3c3c3c;
+  color: rgb(59.5, 59.5, 59.5);
 }
 .typeahead__list.empty > li {
   padding: 0.5rem 0.75rem;
   color: #333;
 }
 .typeahead__list > .typeahead__group {
-  border-color: #bfdef6;
+  border-color: rgb(191.1771428571, 221.6285714286, 245.8228571429);
   font-weight: bold;
 }
 .typeahead__list > .typeahead__group:first-child {
-  border-top: solid 1px #bfdef6;
+  border-top: solid 1px rgb(191.1771428571, 221.6285714286, 245.8228571429);
 }
 .typeahead__list > .typeahead__group > a,
 .typeahead__list > .typeahead__group > a:hover,
 .typeahead__list > .typeahead__group > a:focus, .typeahead__list > .typeahead__group.active > a {
   cursor: default;
-  color: #17639f;
-  background: #ecf5fc;
+  color: rgb(22.88, 98.8, 159.12);
+  background: rgb(235.7657142857, 244.9428571429, 252.2342857143);
   display: block;
   padding: 0.5rem 0.75rem;
   clear: both;
   text-decoration: none;
 }
 .typeahead__list > li.typeahead__group + li.typeahead__item {
-  border-color: #bfdef6;
+  border-color: rgb(191.1771428571, 221.6285714286, 245.8228571429);
 }
 .typeahead__container.result .typeahead__list, .typeahead__container.filter .typeahead__dropdown, .typeahead__container.hint .typeahead__hint, .typeahead__container.backdrop + .typeahead__backdrop {
   display: block !important;
@@ -422,7 +422,7 @@
   display: flex;
   font-size: calc(1rem * 0.875);
   position: relative;
-  background: #ecf5fc;
+  background: rgb(235.7657142857, 244.9428571429, 252.2342857143);
   border: solid 1px #c2e0ff;
   padding-left: 4px;
   border-radius: 2px;
@@ -445,5 +445,5 @@
   border-left: solid 1px #c2e0ff;
 }
 .typeahead__label .typeahead__cancel-button:hover {
-  background-color: #d5e9f9;
+  background-color: rgb(213.4714285714, 233.2857142857, 249.0285714286);
 }

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('address', 100)->nullable()->charset('utf8mb4');
             $table->string('barrio', 50)->nullable()->charset('utf8mb4');
             $table->string('city', 50)->nullable()->charset('utf8mb4');
+            $table->string('profile_photo_path')->nullable();
 
             $table->timestamps();
 

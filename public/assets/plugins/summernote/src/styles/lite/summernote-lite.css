@@ -716,19 +716,19 @@ a.note-dropdown-item:hover {
 }
 
 .note-input::-webkit-input-placeholder {
-  color: #eeeeee;
+  color: rgb(238.425, 238.425, 238.425);
 }
 
 .note-input:-moz-placeholder { /* Firefox 18- */
-  color: #eeeeee;
+  color: rgb(238.425, 238.425, 238.425);
 }
 
 .note-input::-moz-placeholder { /* Firefox 19+ */
-  color: #eeeeee;
+  color: rgb(238.425, 238.425, 238.425);
 }
 
 .note-input:-ms-input-placeholder {
-  color: #eeeeee;
+  color: rgb(238.425, 238.425, 238.425);
 }
 
 .note-tooltip {
@@ -957,7 +957,7 @@ a.note-dropdown-item:hover {
   font-weight: 700;
 }
 .note-editor .note-dropzone.hover {
-  color: #098ddf;
+  color: rgb(9.28, 141.056, 222.72);
 }
 .note-editor.dragover .note-dropzone {
   display: table;

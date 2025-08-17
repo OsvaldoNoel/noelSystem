@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Branch;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -17,7 +17,6 @@ class CheckBranchAccess
         if (!$user || $user->isLandlord()) {
             return $next($request);
         }
-
         $branchId = $request->route('branch')?->id ?? $request->input('branch_id');
 
         if ($branchId) {

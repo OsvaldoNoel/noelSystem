@@ -6,6 +6,7 @@ use Livewire\Component;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Illuminate\Support\Facades\DB;
 
@@ -30,25 +31,29 @@ class RoleManager extends Component
     #[On('loadData')]
     public function loadData()
     {
-        $this->roles = Role::where(function ($query) {
-            $query->whereNull('tenant_id')
-                ->orWhere('tenant_id', Auth::user()->tenant_id);
-        })
-            ->where('name', '!=', 'Propietario')
-            ->withCount('permissions')
-            ->get()
-            ->map(function ($role) {
-                return [
-                    'id' => $role->id,
-                    'name' => $role->name,
-                    'permissions_count' => $role->permissions_count,
-                    'is_predefined' => is_null($role->tenant_id),
-                    'tenant_id' => $role->tenant_id,
-                ];
+        $tenantId = Auth::user()->tenant_id; // Obtener tenant_id del usuario logueado
+
+        $this->roles = Cache::remember("tenant:{$tenantId}:roles", now()->addDay(), function () use ($tenantId) {
+            return Role::where(function ($query) use ($tenantId) {
+                $query->whereNull('tenant_id')
+                    ->orWhere('tenant_id', $tenantId);
             })
-            ->sortByDesc('is_predefined')
-            ->values()
-            ->toArray();
+                ->where('name', '!=', 'Propietario')
+                ->withCount('permissions')
+                ->get()
+                ->map(function ($role) {
+                    return [
+                        'id' => $role->id,
+                        'name' => $role->name,
+                        'permissions_count' => $role->permissions_count,
+                        'is_predefined' => is_null($role->tenant_id),
+                        'tenant_id' => $role->tenant_id,
+                    ];
+                })
+                ->sortByDesc('is_predefined')
+                ->values()
+                ->toArray();
+        });
     }
 
     public function selectRole($roleId)

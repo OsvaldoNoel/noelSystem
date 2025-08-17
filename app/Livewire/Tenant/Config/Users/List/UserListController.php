@@ -254,6 +254,7 @@ class UserListController extends Component
                 'username' => $this->username,
                 'email' => $this->email,
                 'password' => bcrypt('12345678'),
+                'password_changed_at' => null
             ]);
 
             // Asignar rol por defecto (Ventas) - Versión corregida

@@ -293,7 +293,7 @@
   font-weight: 700;
 }
 .note-editor .note-dropzone.hover {
-  color: #098ddf;
+  color: rgb(9.28, 141.056, 222.72);
 }
 .note-editor.dragover .note-dropzone {
   display: table;

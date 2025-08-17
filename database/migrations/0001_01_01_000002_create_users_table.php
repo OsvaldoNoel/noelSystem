@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('username', 20)->charset('ascii')->collation('ascii_bin');
             $table->string('email', 50)->charset('ascii')->collation('ascii_bin');
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('password_changed_at')->nullable();
             $table->string('password');
             $table->unsignedTinyInteger('status')->default(1); // 1=activo, 2=inactivo, 3=suspendido 
             $table->rememberToken();

@@ -3,7 +3,7 @@
 
 <head>
     @include('layouts.tenant.partial.include.head')
-    @stack('styles') <!-- Aquí se cargarán los estilos específicos --> 
+    @stack('styles') <!-- Aquí se cargarán los estilos específicos -->
 </head>
 
 <body>
@@ -11,23 +11,25 @@
 
     <!-- BEGIN #app -->
     <div id="app"
-        class="app app-footer-fixed
-        {{ Request::routeIs('reporteCompras') || Request::routeIs('carrito') || Request::routeIs('compras')
-            ? ' app-sidebar-collapsed'
-            : '' }}">
+        class="app app-footer-fixed @auth @if (auth()->user()->needsPasswordChange()) app-content-full-width @endif @endauth">
 
-        <livewire:tenant.sidebar />
+        @auth
+            <livewire:tenant.sections :show-normal-ui="!auth()->user()->needsPasswordChange()" />
 
-        <!-- BEGIN #content -->
-        <div id="content" class="app-content">
+            <hr class="mt-1 mb-0">
 
-            {{ $slot }}
 
-        </div>
-        <!-- END #content -->
+            <!-- BEGIN #content -->
+            <div id="content" class="app-content">
 
-        @include('layouts.tenant.partial.include.footer')
-        @include('layouts.tenant.partial.include.scroll-top-btn')
+                {{ $slot }}
+
+            </div>
+            <!-- END #content -->
+
+            @include('layouts.tenant.partial.include.footer')
+            @include('layouts.tenant.partial.include.scroll-top-btn')
+        @endauth
     </div>
     <!-- END #app -->
 
@@ -39,30 +41,7 @@
 
 <script>
     document.addEventListener('livewire:init', () => {
-        let value = document.getElementById("menuSuperior").value;
-        if (value == 1) {
-            document.getElementById("app").className =
-                "app app-footer-fixed app-with-top-nav app-without-sidebar";
-            let intro = document.getElementById('footer');
-            intro.style.cssText = 'margin-left: 1.0625rem;';
-            document.getElementById("menuSuperior").checked = true;
-        }
 
-        Livewire.on('menuSuperior', () => {
-            let value = document.getElementById("menuSuperior").value;
-            if (value == 0) {
-                document.getElementById("app").className =
-                    "app app-footer-fixed app-with-top-nav app-without-sidebar";
-                let intro = document.getElementById('footer');
-                intro.style.cssText = 'margin-left: 1.0625rem;';
-                document.getElementById("menuSuperior").value = 1;
-            } else {
-                document.getElementById("app").className = "app app-footer-fixed";
-                let intro = document.getElementById('footer');
-                intro.style.cssText = 'margin-left: 14.0625rem;';
-                document.getElementById("menuSuperior").value = 0;
-            }
-        });
         Livewire.on('showModal', (name) => {
             $('#dataModal' + name).modal('show');
         });

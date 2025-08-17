@@ -211,13 +211,13 @@
                 order: lastOrder,
                 columns: getColumnsConfig(),
                 dom: "<'row align-content-between'<'col-7 mb-3'f><'col-5 mb-3 text-end'B>>t<'d-lg-flex align-items-center mt-3'<'me-auto mb-lg-0 mb-3'i><'mb-0'p> ",
-                scrollY: '64vh',
+                scrollY: '50vh',
                 paging: true,
                 lengthMenu: [
-                    [15],
-                    [15]
+                    [10],
+                    [10]
                 ],
-                pageLength: 15,
+                pageLength: 10,
                 language: getLanguageConfig(),
                 buttons: getButtonsConfig(),
                 initComplete: function() {

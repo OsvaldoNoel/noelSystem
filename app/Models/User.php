@@ -5,17 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
-
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Contracts\Role as RoleContract;
 
+/**
+ * Modelo User - Maneja todos los usuarios del sistema (landlord y tenants)
+ *  
+ */
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasRoles;
 
+    // Tipos de usuario
+    public const TYPE_LANDLORD = 'landlord';
+    public const TYPE_TENANT = 'tenant';
+
+    // Roles predefinidos
+    public const ROLE_OWNER = 'Propietario';
+    public const ROLE_ADMIN = 'Admin';
+    public const ROLE_SALES = 'Ventas';
+    public const ROLE_PURCHASES = 'Compras';
+    public const ROLE_CASHIER = 'Caja';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'tenant_id',
         'user_profile_id',
@@ -23,25 +43,76 @@ class User extends Authenticatable
         'username',
         'email',
         'password',
-        'status'
+        'status',
+        'password_changed_at' // Agregar este campo
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     */
     protected $hidden = ['password', 'remember_token'];
 
+    /**
+     * The attributes that should be cast.
+     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'password_changed_at' => 'datetime' // Agregar este cast
     ];
 
-    // Relaciones
+    /**
+     * Relaciones que se cargarán por defecto 
+     */
+    protected $with = ['profile', 'tenant', 'roles', 'permissions'];
+
+    /* RELACIONES */
+
+    /**
+     * Obtiene el tenant asociado al usuario
+     * 
+     */
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
     }
 
+    /**
+     * Obtiene el perfil de usuario asociado
+     * 
+     */
     public function profile()
     {
         return $this->belongsTo(UserProfile::class, 'user_profile_id');
+    }
+
+    /* SCOPES */
+
+    /**
+     * Filtra usuarios por tenant
+     * 
+     */
+    public function scopeForTenant($query, $tenantId = null)
+    {
+        return $query->where('tenant_id', $tenantId ?? $this->tenant_id);
+    }
+
+    /**
+     * Filtra solo usuarios landlord
+     * 
+     */
+    public function scopeLandlords($query)
+    {
+        return $query->whereNull('tenant_id');
+    }
+
+    /**
+     * Filtra solo usuarios tenant
+     * 
+     */
+    public function scopeTenants($query)
+    {
+        return $query->whereNotNull('tenant_id');
     }
 
     public function sales()
@@ -55,31 +126,63 @@ class User extends Authenticatable
         return $this->getAllPermissions();
     }
 
-    // Scopes útiles
-    public function scopeForTenant($query, $tenantId = null)
-    {
-        return $query->where('tenant_id', $tenantId ?? $this->tenant_id);
-    }
+    /* HELPERS */
 
-    public function scopeLandlords($query)
-    {
-        return $query->whereNull('tenant_id');
-    }
-
-    public function scopeTenants($query)
-    {
-        return $query->whereNotNull('tenant_id');
-    }
-
-    // Helpers
+    /**
+     * Determina si el usuario es landlord 
+     */
     public function isLandlord(): bool
     {
         return is_null($this->tenant_id);
     }
 
+    /**
+     * Determina si el usuario es tenant 
+     */
     public function isTenant(): bool
     {
         return !is_null($this->tenant_id);
+    }
+
+    // Método para verificar si necesita cambiar la contraseña
+    public function needsPasswordChange(): bool
+    {
+        return is_null($this->password_changed_at);
+    }
+
+    //Manejar imagen del usuario
+    public function updateProfilePhoto($photo)
+    {
+        // Eliminar foto anterior si existe
+        if ($this->profile_photo_path && Storage::disk('public')->exists($this->profile_photo_path)) {
+            Storage::disk('public')->delete($this->profile_photo_path);
+        }
+
+        // Guardar nueva foto
+        $path = $photo->store('profile-photos', 'public');
+
+        $this->forceFill([
+            'profile_photo_path' => $path,
+        ])->save();
+    }
+
+    public function getProfilePhotoUrlAttribute()
+    {
+        if (!$this->profile_photo_path) {
+            return $this->defaultProfilePhotoUrl();
+        }
+
+        return asset('storage/' . $this->profile_photo_path);
+    }
+
+
+    protected function defaultProfilePhotoUrl()
+    {
+        $name = $this->profile ?
+            urlencode($this->profile->name . ' ' . $this->profile->lastname) :
+            urlencode('Usuario');
+
+        return 'https://ui-avatars.com/api/?name=' . $name . '&color=7F9CF5&background=EBF4FF';
     }
 
     /**
@@ -144,6 +247,27 @@ class User extends Authenticatable
         return $this;
     }
 
+    // Sobreescribir el método para limpiar cache de permisos
+    public function forgetCachedPermissions()
+    {
+        $cacheKeys = [
+            "user.{$this->id}.permissions",
+            "user.{$this->id}.permissions.tenant.{$this->tenant_id}"
+        ];
+
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+
+        // También limpiar por tags si estás usando Redis
+        Cache::tags([
+            "tenant_{$this->tenant_id}",
+            "user_{$this->id}"
+        ])->flush();
+
+        return $this;
+    }
+
     // Obtener roles considerando el tenant
     public function getRoles()
     {
@@ -181,47 +305,50 @@ class User extends Authenticatable
             ->exists();
     }
 
-    // Agrega caché para los permisos en el modelo User
-    protected $with = ['roles', 'permissions'];
+    // En tu modelo User.php
 
     /**
-     * Obtiene todos los permisos del usuario (directos y a través de roles)
-     * con cache para mejor rendimiento
+     * Obtiene todos los permisos del usuario con cache en Redis
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    // En User.php
     public function getAllPermissions()
     {
-        $cacheKey = "user.{$this->id}.permissions.tenant.{$this->tenant_id}";
+        $cacheKey = "user:{$this->id}:permissions:tenant:{$this->tenant_id}";
+        $tags = ["user_{$this->id}", "tenant_{$this->tenant_id}"];
 
-        return cache()->remember($cacheKey, 3600, function () {
+        return Cache::tags($tags)->remember($cacheKey, now()->addHours(6), function () {
             if ($this->isLandlord()) {
                 return Permission::all();
             }
 
-            // Permisos directos del usuario para este tenant
-            $directPermissions = $this->permissions()
-                ->wherePivot('tenant_id', $this->tenant_id)
-                ->get();
-
-            // Permisos a través de roles para este tenant
-            $rolePermissions = DB::table('permissions')
-                ->join('role_has_permissions', 'permissions.id', '=', 'role_has_permissions.permission_id')
-                ->join('model_has_roles', function ($join) {
-                    $join->on('role_has_permissions.role_id', '=', 'model_has_roles.role_id')
-                        ->where('model_has_roles.model_id', $this->id)
-                        ->where('model_has_roles.model_type', User::class)
+            return Permission::where(function ($query) {
+                $query->whereHas('users', function ($q) {
+                    $q->where('model_has_permissions.model_id', $this->id)
+                        ->where('model_has_permissions.tenant_id', $this->tenant_id);
+                })->orWhereHas('roles.users', function ($q) {
+                    $q->where('model_has_roles.model_id', $this->id)
                         ->where('model_has_roles.tenant_id', $this->tenant_id);
-                })
-                ->select('permissions.*')
-                ->distinct()
-                ->get()
-                ->map(function ($item) {
-                    return Permission::hydrate([(array)$item])->first();
                 });
-
-            return $directPermissions->merge($rolePermissions)->unique('id');
+            })->get()->unique();
         });
     }
+
+    /**
+     * Obtiene los roles del usuario con cache en Redis
+     * Considerando el contexto multitenant
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getCachedRoles()
+    {
+        $cacheKey = "user:{$this->id}:roles:tenant:{$this->tenant_id}";
+        $tags = ["user_{$this->id}", "tenant_{$this->tenant_id}"];
+
+        return Cache::tags($tags)->remember($cacheKey, now()->addHours(4), function () {
+            return $this->getRoles(); // Utiliza tu método existente
+        });
+    }
+
 
     /**
      * Obtiene los permisos sin usar cache
@@ -297,11 +424,22 @@ class User extends Authenticatable
     public static function booted()
     {
         static::updated(function ($user) {
-            cache()->forget("user.{$user->id}.permissions");
+            $user->forgetCachedPermissions();
+            $user->clearPermissionCache();
         });
 
         static::deleted(function ($user) {
-            cache()->forget("user.{$user->id}.permissions");
+            $user->forgetCachedPermissions();
+            $user->clearPermissionCache();
         });
+    }
+
+    public function clearPermissionCache()
+    {
+        $tags = ["user_{$this->id}", "tenant_{$this->tenant_id}"];
+        Cache::tags($tags)->flush();
+
+        // También limpia cache de relaciones
+        Cache::forget("user:{$this->id}:roles:tenant:{$this->tenant_id}");
     }
 }

@@ -16,19 +16,32 @@ use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
 {
+    // Usamos las constantes del modelo User para mantener consistencia
+    private const REDIRECT_LANDLORD = 'landlord.home';
+    private const REDIRECT_TENANT = 'app.home';
 
+    /**
+     * Muestra el formulario de login
+     *
+     * @return View
+     */
     public function create(): View
     {
         return view('auth.login');
     }
 
-    //Valida el CI y devuelve los tenants asociados
+    /**
+     * Valida el CI y devuelve los tenants asociados
+     *
+     * @param Request $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
     public function validateCi(Request $request): JsonResponse
     {
         $request->validate(['ci' => 'required|string|min:3']);
 
-        // Buscar el perfil con el CI
-        $profile = userProfile::with('users')->where('ci', $request->ci)->first();
+        $profile = UserProfile::with('users')->where('ci', $request->ci)->first();
 
         if (!$profile) {
             return response()->json([
@@ -37,10 +50,48 @@ class AuthenticatedSessionController extends Controller
             ], 404);
         }
 
-        $options = [];
-        $users = $profile->users;
+        return response()->json([
+            'success' => true,
+            'tenants' => $this->formatTenantOptions($profile->users)
+        ]);
+    }
 
-        // 1. Agregar Landlord primero si existe un tenant_id nulo
+    /**
+     * Maneja una solicitud de autenticación
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
+    public function store(LoginRequest $request): JsonResponse
+    {
+        try {
+            $request->authenticate();
+            $request->session()->regenerate();
+
+            $user = Auth::user();
+            $this->setupUserSession($request, $user);
+
+            return response()->json([
+                'redirect' => route($this->getRedirectRoute($user))
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], $e->status);
+        }
+    }
+
+    /**
+     * Formatea las opciones de tenant para la respuesta JSON
+     *
+     * @param \Illuminate\Database\Eloquent\Collection $users
+     * @return array
+     */
+    protected function formatTenantOptions($users): array
+    {
+        $options = [];
+        
+        // 1. Agregar Landlord primero si existe
         if ($users->contains('tenant_id', null)) {
             $options[] = [
                 'id' => 'landlord',
@@ -60,88 +111,102 @@ class AuthenticatedSessionController extends Controller
             }
         }
 
-        return response()->json([
-            'success' => true,
-            'tenants' => $options
-        ]);
+        return $options;
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Configura la sesión del usuario después del login
+     *
+     * @param Request $request
+     * @param User $user
+     * @return void
      */
-    public function store(LoginRequest $request)
+    protected function setupUserSession(Request $request, User $user): void
     {
-        try {
-            $request->authenticate();
-            $request->session()->regenerate();
-
-            /** @var User $user */ // Esto ayuda al IDE a reconocer el tipo
-            $user = Auth::user();
-            $tenant = $user->tenant_id ? Tenant::find($user->tenant_id) : null;
-
-            // Determinar user_type y nombres
-            if ($user->tenant_id === null) {
-                // Usuario landlord (administrador central)
-                $userType = 'landlord';
-                $tenantName = null;
-                $sucursalName = null;
-            } else {
-                // Usuario relacionado a un tenant
-                $tenantName = $tenant->name;
-                $userType = 'tenant';
-                // 1. Determinar si el tenant del usuario es "casa central" de otras sucursales
-                $tiene_sucursales = Tenant::where('sucursal', $user->tenant_id)->exists()
-                    ? true
-                    : false;
-
-                if ($tiene_sucursales) {
-                    if ($user->sucursal === null) {
-                        // Usuario sin sucursal asignada
-                        $sucursalName = "Casa Central";
-                    } else {
-                        // Usuario asignado a una sucursal específica
-                        $sucursalName = Tenant::find($user->sucursal)->name;
-                    }
-                } else {
-                    $sucursalName = null;
-                }
-            }
-
-            // Guardar información en sesión
-            session([
-                'user_type' => $userType,
-                'tenant' => $tenantName,
-                'sucursal' => $sucursalName,
-                'tenant_id' => $user->tenant_id,
-                'sucursal_id' => $user->sucursal,
-                'user_id' => $user->id // Agregar user_id para referencia
-            ]);
-
-            // Agregar el tenant al request para que esté disponible inmediatamente
-            $request->merge(['tenant' => $tenant]);
-
-            // Redirección basada en tipo de usuario
-            $redirectRoute = $userType === 'tenant' ? 'homeApp' : 'homeLandlord';
-
-            return response()->json([
-                'redirect' => route($redirectRoute)
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'errors' => $e->errors()
-            ], $e->status);
-        }
+        $sessionData = $this->determineSessionData($user);
+        $request->session()->put($sessionData);
+        $request->merge(['tenant' => $sessionData['tenant']]);
     }
 
     /**
-     * Destroy an authenticated session.
+     * Determina los datos de sesión basados en el tipo de usuario
+     *
+     * @param User $user
+     * @return array
+     */
+    protected function determineSessionData(User $user): array
+    {
+        if ($user->isLandlord()) {
+            return [
+                'user_type' => User::TYPE_LANDLORD, // Usamos la constante del modelo User
+                'tenant' => null,
+                'sucursal' => null,
+                'tenant_id' => null,
+                'sucursal_id' => null,
+                'user_id' => $user->id
+            ];
+        }
+
+        return $this->getTenantSessionData($user);
+    }
+
+    /**
+     * Obtiene los datos de sesión para usuarios tenant
+     *
+     * @param User $user
+     * @return array
+     */
+    protected function getTenantSessionData(User $user): array
+    {
+        $tenant = $user->tenant;
+        $hasBranches = Tenant::where('sucursal', $user->tenant_id)->exists();
+
+        return [
+            'user_type' => User::TYPE_TENANT, // Usamos la constante del modelo User
+            'tenant' => $tenant->name,
+            'sucursal' => $hasBranches ? $this->getBranchName($user) : null,
+            'tenant_id' => $user->tenant_id,
+            'sucursal_id' => $user->sucursal,
+            'user_id' => $user->id
+        ];
+    }
+
+    /**
+     * Obtiene el nombre de la sucursal para mostrar en sesión
+     *
+     * @param User $user
+     * @return string|null
+     */
+    protected function getBranchName(User $user): ?string
+    {
+        return $user->sucursal ? 
+            Tenant::find($user->sucursal)->name : 
+            "Casa Central";
+    }
+
+    /**
+     * Determina la ruta de redirección post-login
+     *
+     * @param User $user
+     * @return string
+     */
+    protected function getRedirectRoute(User $user): string
+    {
+        return $user->isLandlord() ? 
+            self::REDIRECT_LANDLORD : 
+            self::REDIRECT_TENANT;
+    }
+
+    /**
+     * Cierra la sesión del usuario
+     *
+     * @param Request $request
+     * @return RedirectResponse
      */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/login');

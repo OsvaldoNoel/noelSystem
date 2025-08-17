@@ -306,6 +306,7 @@ class TenantController extends Component
                     'email' => $this->email,
                     'username' => $this->ci . $tenant->id, // CI + Tenant ID
                     'password' => bcrypt('12345678'), // Contraseña por defecto, se debe cambiar luego
+                    'password_changed_at' => null // Forzar cambio de contraseña al primer login
                 ]);
 
 
