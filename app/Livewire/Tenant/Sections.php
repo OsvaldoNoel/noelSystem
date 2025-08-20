@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Tenant;
 
-use App\Models\Tenant;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Auth;
@@ -10,22 +9,22 @@ use Livewire\Component;
 
 class Sections extends Component
 {
-   public $tenantName;
+    public $tenantName;
     public $user;
     public $profilePhotoUrl;
     public $sidebarOpen = false;
-    public $showNormalUI; // Definimos la propiedad pública
+    public $showNormalUI;
 
     protected $listeners = [
-        'profile-photo-updated' => 'updateProfilePhoto',
+        'profile-photo-updated' => 'updateProfilePhoto'
     ];
 
     public function mount($showNormalUi = false)
     {
-        $this->showNormalUI = $showNormalUi; // Asignamos el valor del parámetro
+        $this->showNormalUI = $showNormalUi;
         $this->loadUserData();
         $this->prepareProfilePhoto();
-    }
+    } 
 
 
     public function loadUserData()

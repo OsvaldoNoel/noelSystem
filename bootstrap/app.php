@@ -33,6 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'cache.permission' => \App\Http\Middleware\User\CachePermissionChecks::class,
             'tenant.branch' => \App\Http\Middleware\Branch\CheckBranchAccess::class,
             'password.changed' => \App\Http\Middleware\User\EnsurePasswordChanged::class,
+            'verified.custom' => \App\Http\Middleware\User\EnsureEmailIsVerifiedCustom::class,
         ]);
 
         // Agrupar middlewares para reutilización

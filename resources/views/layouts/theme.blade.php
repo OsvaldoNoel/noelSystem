@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"> 
+    <head>
+        @include('layouts.partial.include.head')
+        @stack('styles') <!-- Aquí se cargarán los estilos específicos -->
+    </head>
 
-<head>
-    @include('layouts.tenant.partial.include.head')
-    @stack('styles') <!-- Aquí se cargarán los estilos específicos -->
-</head>
+    <body>
 
-<body>
-    @include('layouts.tenant.partial.include.loader')
+        @include('layouts.partial.include.loader')
 
-    <!-- BEGIN #app -->
-    <div id="app"
-        class="app app-footer-fixed @auth @if (auth()->user()->needsPasswordChange()) app-content-full-width @endif @endauth">
+        <!-- BEGIN #app -->
+        <div id="app" class="app app-footer-fixed @if (!auth()->user()->showNormalUi()) app-content-full-width @endif">
 
-        @auth
-            <livewire:tenant.sections :show-normal-ui="!auth()->user()->needsPasswordChange()" />
+
+            <livewire:tenant.sections :show-normal-ui="auth()->user()->showNormalUi()" />
+
 
             <hr class="mt-1 mb-0">
 
@@ -27,16 +27,16 @@
             </div>
             <!-- END #content -->
 
-            @include('layouts.tenant.partial.include.footer')
-            @include('layouts.tenant.partial.include.scroll-top-btn')
-        @endauth
-    </div>
-    <!-- END #app -->
+            @include('layouts.partial.include.footer')
+            @include('layouts.partial.include.scroll-top-btn')
 
-    <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100"></div>
-    @include('layouts.tenant.partial.include.scripts')
-</body>
+        </div>
+        <!-- END #app -->
 
+        <div id="toast-container" class="position-fixed top-0 end-0 p-3" style="z-index: 1100"></div>
+        @include('layouts.partial.include.scripts')
+
+    </body> 
 </html>
 
 <script>

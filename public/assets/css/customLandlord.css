@@ -1,0 +1,4 @@
+:root {
+    --bs-body-bg-gradient: linear-gradient(180deg, rgb(0 0 0 / 95%), rgba(6, 34, 24, 0.95)); 
+    --bs-body-bg-cover: url(../../assets/img/cover.jpg); 
+}

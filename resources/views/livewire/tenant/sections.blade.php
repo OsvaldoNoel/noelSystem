@@ -1,6 +1,6 @@
 <div>
-    @include('layouts.tenant.partial.include.header')
+    @include('layouts.partial.include.header')
     @if ($showNormalUI)
-        @include('layouts.tenant.partial.include.sidebar') 
+        @include('layouts.partial.include.sidebar') 
     @endif
 </div>

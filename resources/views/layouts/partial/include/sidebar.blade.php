@@ -22,18 +22,18 @@
         <div class="menu">
 
             <div class="mt-3"></div>
-            @include('layouts.tenant.partial.menus.dashboard')
+            @include('layouts.partial.menus.dashboard')
 
             <div class="menu-header">APP</div>
-            @include('layouts.tenant.partial.menus.ventas')
-            @include('layouts.tenant.partial.menus.stock')
-            @include('layouts.tenant.partial.menus.clientes')
-            @include('layouts.tenant.partial.menus.proveedores')
-            @include('layouts.tenant.partial.menus.finanzas')
+            @include('layouts.partial.menus.ventas')
+            @include('layouts.partial.menus.stock')
+            @include('layouts.partial.menus.clientes')
+            @include('layouts.partial.menus.proveedores')
+            @include('layouts.partial.menus.finanzas')
 
             <div class="menu-header">ADMIN</div>
-            @include('layouts.tenant.partial.menus.config')
-            @include('layouts.tenant.partial.menus.reportes')
+            @include('layouts.partial.menus.config')
+            @include('layouts.partial.menus.reportes')
 
         </div>
         <!-- END menu -->

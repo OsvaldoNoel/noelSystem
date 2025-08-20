@@ -12,17 +12,18 @@ class EnsurePasswordChanged
     {
         $user = $request->user();
 
+        // Rutas permitidas sin cambio de contraseña
         $allowedRoutes = [
             'logout',
-            'app.home', // Permitir siempre el home
-            'password.change.update', // Permitir el endpoint de actualización
+            'password.change', // Ruta del formulario de cambio
+            'password.change.update', // Ruta para actualizar la contraseña
         ];
 
         if (
             $user && $user->needsPasswordChange() &&
             !in_array($request->route()->getName(), $allowedRoutes)
         ) {
-            return redirect()->route('app.home');
+            return redirect()->route('password.change');
         }
 
         return $next($request);

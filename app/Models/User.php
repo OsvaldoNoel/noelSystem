@@ -2,21 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 use Spatie\Permission\Contracts\Role as RoleContract;
 
 /**
  * Modelo User - Maneja todos los usuarios del sistema (landlord y tenants)
  *  
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable, HasRoles;
 
@@ -44,6 +47,7 @@ class User extends Authenticatable
         'email',
         'password',
         'status',
+        'email_verified_at',
         'password_changed_at' // Agregar este campo
     ];
 
@@ -148,6 +152,42 @@ class User extends Authenticatable
     public function needsPasswordChange(): bool
     {
         return is_null($this->password_changed_at);
+    }
+
+    // Método para verificar si debe mostrar la UI normal
+    public function showNormalUi(): bool
+    {
+        return  $this->password_changed_at !== null && $this->email_verified_at !== null;
+    }
+
+    public function generateVerificationToken()
+    {
+        $this->email_verification_tokens()->delete(); // Eliminar tokens previos
+
+        return $this->email_verification_tokens()->create([
+            'token' => Str::random(60),
+            'expires_at' => now()->addHours(24)
+        ]);
+    }
+
+    public function email_verification_tokens()
+    {
+        return $this->hasMany(EmailVerificationToken::class);
+    }
+
+    /**
+     * Envía la notificación de verificación de email
+     */
+    public function sendEmailVerificationNotification()
+    {
+        $verificationUrl = route('verification.verify', [
+            'id' => $this->id,
+            'hash' => sha1($this->email),
+            'expires' => now()->addMinutes(60)->timestamp,
+            'signature' => hash_hmac('sha256', $this->email, config('app.key'))
+        ]);
+
+        Mail::to($this->email)->send(new \App\Mail\BrevoVerificationEmail($this, $verificationUrl));
     }
 
     //Manejar imagen del usuario
